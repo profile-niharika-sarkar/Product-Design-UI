@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "anthropic.claude-code",
+    "esbenp.prettier-vscode",
+    "vitest.explorer",
+    "bierner.markdown-mermaid",
+    "deque-systems.vscode-axe-linter"
+  ]
+}

@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-montserrat: "Montserrat", sans-serif;
+  --font-sans: "Montserrat", sans-serif;
+  --color-brand-pink: #FF4FD8;
+  --color-brand-magenta: #D946EF;
+  --color-brand-purple: #9333EA;
+  --color-brand-dark: #0A0A0A;
+  --color-brand-darker: #111111;
+  --color-brand-primary: #00D1C1;
+  --color-brand-secondary: #06B6D4;
+  --color-brand-accent: #00A99D;
+  --color-brand-dark-blue: #000000;
+  --color-brand-darker-blue: #000000;
+}

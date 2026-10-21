@@ -1,0 +1,6 @@
+{
+  "name": "The Bradbury Group - AI Training & Speaking",
+  "description": "AI literacy and workforce training firm based in Metro Atlanta, Georgia. Executive coaching, cohort-based team training, and keynote speaking aligned with the U.S. DOL AI Literacy Framework.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

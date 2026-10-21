@@ -1,0 +1,2605 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Project Performance Overview - Standalone Interactive</title>
+  
+  <!-- Font Integrations -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Tailwind Custom Config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              navy: '#0a1128',
+              slate: '#111d37',
+              border: '#1f3160',
+              orange: '#f97316',
+              teal: '#14b8a6',
+              emerald: '#10b981',
+              risk: '#ef4444'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+            display: ['Space Grotesk', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Alpine.js CDN -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    body {
+      background-color: #0a1128;
+      color: #f1f5f9;
+    }
+    .scrollbar-thin::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-track {
+      background: #0a1128;
+    }
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+      background: #1f3160;
+      border-radius: 3px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+      background: #f97316;
+    }
+    /* Simple spin-slow animation for presentation gear */
+    @keyframes spin-slow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .animate-spin-slow {
+      animation: spin-slow 8s linear infinite;
+    }
+  </style>
+</head>
+<body class="h-full overflow-hidden font-sans antialiased selection:bg-teal-500/30 selection:text-white"
+      x-data="portfolioApp()"
+      x-effect="$nextTick(() => lucide.createIcons())">
+
+  <!-- Interactive Root Container -->
+  <div class="h-full flex overflow-hidden">
+    
+    <!-- Left Sidebar Panel -->
+    <aside class="hidden lg:flex flex-col w-64 bg-brand-navy border-r border-brand-border shrink-0 justify-between z-20">
+      <div class="p-6">
+        <!-- Logo Header -->
+        <div class="flex items-center gap-3 mb-8">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-teal to-teal-400 flex items-center justify-center shadow-lg shadow-brand-teal/20">
+            <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
+          </div>
+          <div>
+            <span class="block text-sm font-black text-white tracking-tight uppercase font-display">GPPO Core</span>
+            <span class="block text-[9px] font-bold text-brand-teal uppercase tracking-widest">Enterprise Hub</span>
+          </div>
+        </div>
+
+        <!-- Sidebar Navigation links -->
+        <nav class="space-y-1.5">
+          <button
+            @click="activeMenu = 'overview'"
+            class="w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold transition-all relative"
+            :class="activeMenu === 'overview' ? 'bg-brand-slate text-white border border-brand-border shadow-md' : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'"
+          >
+            <i data-lucide="home" class="w-4 h-4" :class="activeMenu === 'overview' ? 'text-brand-teal' : 'text-slate-500'"></i>
+            <span>Home Overview</span>
+            <span x-show="activeMenu === 'overview'" class="absolute right-3 w-1.5 h-1.5 rounded-full bg-brand-teal"></span>
+          </button>
+
+          <button
+            @click="activeMenu = 'presentation'"
+            class="w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold transition-all relative"
+            :class="activeMenu === 'presentation' ? 'bg-brand-slate text-white border border-brand-border shadow-md' : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'"
+          >
+            <i data-lucide="presentation" class="w-4 h-4" :class="activeMenu === 'presentation' ? 'text-brand-teal' : 'text-slate-500'"></i>
+            <span>CIV Slide Deck</span>
+            <span x-show="activeMenu === 'presentation'" class="absolute right-3 w-1.5 h-1.5 rounded-full bg-brand-teal"></span>
+          </button>
+
+          <button
+            @click="activeMenu = 'overview'"
+            class="w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 cursor-not-allowed opacity-50"
+            disabled
+          >
+            <i data-lucide="briefcase" class="w-4 h-4 text-slate-600"></i>
+            <span>Project Intake</span>
+          </button>
+
+          <button
+            @click="activeMenu = 'overview'"
+            class="w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 cursor-not-allowed opacity-50"
+            disabled
+          >
+            <i data-lucide="grid" class="w-4 h-4 text-slate-600"></i>
+            <span>Business Units</span>
+          </button>
+
+          <button
+            @click="activeMenu = 'overview'"
+            class="w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 cursor-not-allowed opacity-50"
+            disabled
+          >
+            <i data-lucide="layers" class="w-4 h-4 text-slate-600"></i>
+            <span>Financial Ledger</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Quick Actions / User Profile Section -->
+      <div class="p-6 border-t border-brand-border space-y-4">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-full bg-brand-teal/30 flex items-center justify-center border border-brand-teal/30 text-brand-teal font-mono text-xs font-bold">
+            HQ
+          </div>
+          <div>
+            <span class="block text-xs font-bold text-white leading-none">Internal Office</span>
+            <span class="text-[9px] font-bold text-slate-500 font-mono tracking-widest mt-0.5 block">STANDALONE APP</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area Scroll Container -->
+    <main class="flex-1 min-h-screen p-6 lg:p-8 overflow-y-auto max-w-7xl mx-auto w-full scrollbar-thin relative">
+      
+      <!-- Top Header Row -->
+      <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 pb-6 border-b border-brand-border/50">
+        <div>
+          <div class="flex items-center gap-2 mb-1.5">
+            <span class="flex h-2 w-2 relative">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-teal opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-teal"></span>
+            </span>
+            <span class="text-[10px] font-bold text-slate-400 tracking-widest uppercase font-mono">
+              System Active • <span x-text="projects.length"></span> Data Records Loaded
+            </span>
+          </div>
+          <h1 class="text-2xl font-black text-white font-display tracking-tight sm:text-3xl">
+            Global Project Performance Overview
+          </h1>
+        </div>
+
+        <!-- Premium CTA Buttons -->
+        <div class="flex flex-wrap items-center gap-3.5 w-full md:w-auto">
+          <!-- Simulate Intake -->
+          <button
+            @click="simulateIntake()"
+            class="flex items-center gap-2 px-4 py-2.5 bg-brand-slate hover:bg-brand-navy border border-brand-border text-brand-teal hover:text-white font-bold text-xs rounded-xl shadow-lg transition-all cursor-pointer active:scale-95"
+          >
+            <i data-lucide="plus" class="w-3.5 h-3.5 text-brand-teal"></i>
+            <span>Simulate Intake</span>
+          </button>
+
+          <!-- Export CSV -->
+          <button
+            @click="exportCSV()"
+            class="flex items-center gap-2 px-4 py-2.5 bg-brand-orange hover:bg-orange-600 text-white font-bold text-xs rounded-xl shadow-lg transition-all cursor-pointer active:scale-95"
+          >
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+            <span>Export CSV</span>
+          </button>
+
+          <!-- User Indicator Section -->
+          <div class="flex items-center gap-2.5 ml-1 border-l border-brand-border/60 pl-3.5">
+            <button class="relative text-slate-400 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/5">
+              <i data-lucide="bell" class="w-4.5 h-4.5"></i>
+              <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-brand-orange rounded-full"></span>
+            </button>
+            <div class="w-8 h-8 rounded-full bg-brand-navy border border-brand-border flex items-center justify-center text-xs font-bold text-brand-teal shadow-inner font-mono">
+              JD
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- TAB 1: DASHBOARD OVERVIEW -->
+      <div x-show="activeMenu === 'overview'" class="space-y-8" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+        
+        <!-- 3 Executive KPI Cards -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Card 1: Budget -->
+          <div class="p-6 bg-brand-slate border border-brand-border rounded-2xl relative overflow-hidden group hover:border-brand-teal/30 transition-all duration-300">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-brand-teal/5 to-transparent rounded-bl-full pointer-events-none"></div>
+            <span class="block text-xs font-bold text-slate-400 tracking-wider uppercase font-mono">Currently (Allocated Capital)</span>
+            <div class="text-2xl md:text-3xl font-black text-white mt-2.5 tracking-tight font-display" x-text="formatCurrency(kpis().totalBudget)"></div>
+            <p class="text-[11px] text-slate-400 mt-1.5">Aggregated portfolio development budget</p>
+          </div>
+
+          <!-- Card 2: Deliverables -->
+          <div class="p-6 bg-brand-slate border border-brand-border rounded-2xl relative overflow-hidden group hover:border-brand-teal/30 transition-all duration-300">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-brand-teal/5 to-transparent rounded-bl-full pointer-events-none"></div>
+            <span class="block text-xs font-bold text-slate-400 tracking-wider uppercase font-mono">Deliverables Focus</span>
+            <div class="text-2xl md:text-3xl font-black text-white mt-2.5 tracking-tight font-display">
+              <span x-text="kpis().active"></span> Active / <span x-text="kpis().completed"></span> Finished
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1.5">Active sprint deliverables in progress</p>
+          </div>
+
+          <!-- Card 3: At Risk -->
+          <div class="p-6 bg-brand-slate border border-brand-border rounded-2xl relative overflow-hidden group hover:border-brand-risk/20 transition-all duration-300">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-brand-risk/5 to-transparent rounded-bl-full pointer-events-none"></div>
+            <span class="block text-xs font-bold text-slate-400 tracking-wider uppercase font-mono">At Risk (Timeline Delayed)</span>
+            <div class="text-2xl md:text-3xl font-black text-brand-risk mt-2.5 tracking-tight font-display">
+              <span x-text="kpis().delayed"></span> Projects
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1.5">Initiatives requiring critical remediation</p>
+          </div>
+        </section>
+
+        <!-- Dynamic Filter Panel -->
+        <section class="p-5 bg-brand-slate border border-brand-border rounded-2xl">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <!-- Search Text -->
+            <div class="space-y-1.5">
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono">Search Initiatives</label>
+              <div class="relative">
+                <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3 top-3"></i>
+                <input
+                  type="text"
+                  x-model="search"
+                  placeholder="ID, Title, or Manager..."
+                  class="w-full bg-brand-navy border border-brand-border focus:border-brand-teal text-white placeholder-slate-500 px-3.5 py-2 pl-9 rounded-xl text-xs outline-none transition-colors"
+                />
+              </div>
+            </div>
+
+            <!-- Region -->
+            <div class="space-y-1.5">
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono">Geography Region</label>
+              <select
+                x-model="region"
+                class="w-full bg-brand-navy border border-brand-border focus:border-brand-teal text-white px-3 py-2 rounded-xl text-xs outline-none transition-colors"
+              >
+                <option value="">All Regions</option>
+                <option value="North America">North America</option>
+                <option value="Europe">Europe</option>
+                <option value="Asia-Pacific">Asia-Pacific</option>
+                <option value="Latin America">Latin America</option>
+              </select>
+            </div>
+
+            <!-- Business Unit -->
+            <div class="space-y-1.5">
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono">Business Unit (BU)</label>
+              <select
+                x-model="bu"
+                class="w-full bg-brand-navy border border-brand-border focus:border-brand-teal text-white px-3 py-2 rounded-xl text-xs outline-none transition-colors"
+              >
+                <option value="">All BUs</option>
+                <option value="Research">Research</option>
+                <option value="Analytics">Analytics</option>
+                <option value="Risk">Risk</option>
+                <option value="Commercial">Commercial</option>
+                <option value="Technology">Technology</option>
+              </select>
+            </div>
+
+            <!-- Quarter -->
+            <div class="space-y-1.5">
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono">Quarter Timeline</label>
+              <select
+                x-model="quarter"
+                class="w-full bg-brand-navy border border-brand-border focus:border-brand-teal text-white px-3 py-2 rounded-xl text-xs outline-none transition-colors"
+              >
+                <option value="">All Quarters</option>
+                <option value="Q1">Q1</option>
+                <option value="Q2">Q2</option>
+                <option value="Q3">Q3</option>
+                <option value="Q4">Q4</option>
+              </select>
+            </div>
+
+            <!-- Type and Reset -->
+            <div class="space-y-1.5">
+              <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono">Project Type</label>
+              <div class="flex items-center gap-2">
+                <select
+                  x-model="type"
+                  class="flex-1 bg-brand-navy border border-brand-border focus:border-brand-teal text-white px-3 py-2 rounded-xl text-xs outline-none transition-colors"
+                >
+                  <option value="">All Types</option>
+                  <option value="Software">Software</option>
+                  <option value="Research">Research</option>
+                  <option value="Consulting">Consulting</option>
+                  <option value="Operations">Operations</option>
+                </select>
+                <button
+                  @click="resetFilters()"
+                  class="p-2 bg-brand-navy border border-brand-border hover:border-brand-teal text-slate-400 hover:text-white rounded-xl transition-all cursor-pointer"
+                  title="Reset Filters"
+                >
+                  <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 flex items-center justify-between text-xs text-slate-400 border-t border-brand-border/40 pt-3">
+            <span>Filtered results: <strong class="text-white" x-text="filteredProjects().length"></strong> of <span x-text="projects.length"></span> metrics</span>
+            <span class="text-[10px] uppercase tracking-wider font-mono bg-brand-navy px-2.5 py-1 rounded-md text-brand-teal font-bold" x-show="region || bu || quarter || type || search">Filters Applied</span>
+          </div>
+        </section>
+
+        <!-- SVG Interactive Dashboard Charts -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          
+          <!-- Monthly Project Intake SVG Chart -->
+          <div class="p-6 bg-brand-slate border border-brand-border rounded-2xl">
+            <div class="flex items-center justify-between mb-6">
+              <div>
+                <h3 class="text-sm font-bold text-white uppercase tracking-wider font-mono">Monthly Project Intake</h3>
+                <p class="text-[10px] text-slate-400">Chronological submission trend analysis</p>
+              </div>
+              <div class="text-[10px] font-mono text-brand-teal uppercase bg-brand-navy px-2 py-1 rounded">
+                Live Data Link
+              </div>
+            </div>
+
+            <!-- SVG Bar Rendering -->
+            <div class="h-48 flex items-end justify-between px-2 gap-4">
+              <template x-for="item in chartMonthlyData()" :key="item.month">
+                <div class="flex-1 flex flex-col items-center h-full justify-end group cursor-pointer">
+                  <!-- Bar Value Hover -->
+                  <div class="bg-brand-navy border border-brand-border text-white text-[9px] font-mono px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity mb-1" x-text="item.count + ' prj'"></div>
+                  
+                  <!-- Responsive Bar Column -->
+                  <div 
+                    class="w-full rounded-t bg-brand-orange hover:bg-orange-400 transition-all duration-500 ease-out shadow-lg"
+                    :style="'height: ' + Math.max(8, (item.count / maxMonthlyCount()) * 100) + '%'"
+                  ></div>
+
+                  <!-- Month label -->
+                  <span class="text-[10px] font-mono font-bold text-slate-500 mt-2" x-text="item.month"></span>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <!-- Business Unit Allocation SVG Chart -->
+          <div class="p-6 bg-brand-slate border border-brand-border rounded-2xl">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h3 class="text-sm font-bold text-white uppercase tracking-wider font-mono">Business Unit Allocation</h3>
+                <p class="text-[10px] text-slate-400">Deliverables density split across core sectors</p>
+              </div>
+              <div class="text-[10px] font-mono text-brand-teal uppercase bg-brand-navy px-2 py-1 rounded">
+                Filtered Density
+              </div>
+            </div>
+
+            <!-- Horizontal Rows representing share -->
+            <div class="space-y-4 pt-2">
+              <template x-for="buData in chartBUData()" :key="buData.name">
+                <div class="space-y-1">
+                  <div class="flex justify-between text-xs font-mono font-bold">
+                    <span class="text-slate-300" x-text="buData.name"></span>
+                    <span class="text-slate-400" x-text="buData.count + ' (' + Math.round(buData.percent) + '%)'"></span>
+                  </div>
+                  <div class="h-2 w-full bg-brand-navy rounded-full overflow-hidden border border-brand-border/40">
+                    <div 
+                      class="h-full bg-brand-teal rounded-full transition-all duration-500"
+                      :style="'width: ' + buData.percent + '%'"
+                    ></div>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </section>
+
+        <!-- Project Table List -->
+        <section class="bg-brand-slate border border-brand-border rounded-2xl overflow-hidden">
+          <div class="p-6 border-b border-brand-border/40 flex justify-between items-center">
+            <h3 class="text-sm font-black text-white uppercase tracking-wider font-mono">Active Records Catalog</h3>
+            <span class="text-[10px] font-bold bg-brand-navy border border-brand-border px-2.5 py-1 rounded text-slate-400 font-mono">
+              Displaying <span x-text="paginatedProjects().length"></span> records
+            </span>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-brand-navy/40 border-b border-brand-border/40 text-[10px] font-bold text-slate-400 uppercase tracking-wider font-mono">
+                  <th class="py-3 px-5">ID</th>
+                  <th class="py-3 px-5">Initiative Name</th>
+                  <th class="py-3 px-5">Lead / Sponsor</th>
+                  <th class="py-3 px-5">Business Unit</th>
+                  <th class="py-3 px-5">Capital Budget</th>
+                  <th class="py-3 px-5">Progress</th>
+                  <th class="py-3 px-5">Timeline Status</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-brand-border/20 text-xs">
+                <template x-for="project in paginatedProjects()" :key="project.id">
+                  <tr 
+                    @click="selectProject(project)"
+                    class="hover:bg-brand-navy/30 transition-all cursor-pointer group"
+                  >
+                    <!-- ID -->
+                    <td class="py-3.5 px-5 font-mono text-[11px] font-semibold text-slate-400 group-hover:text-brand-orange transition-colors" x-text="project.id"></td>
+                    
+                    <!-- Title -->
+                    <td class="py-3.5 px-5 font-bold text-white group-hover:text-brand-teal transition-colors" x-text="project.name"></td>
+                    
+                    <!-- Lead -->
+                    <td class="py-3.5 px-5 text-slate-300" x-text="project.lead"></td>
+                    
+                    <!-- BU -->
+                    <td class="py-3.5 px-5">
+                      <span class="px-2 py-0.5 rounded text-[10px] font-mono font-semibold"
+                            :class="{
+                              'bg-purple-500/10 text-purple-300 border border-purple-500/20': project.businessUnit === 'Research',
+                              'bg-blue-500/10 text-blue-300 border border-blue-500/20': project.businessUnit === 'Analytics',
+                              'bg-red-500/10 text-red-300 border border-red-500/20': project.businessUnit === 'Risk',
+                              'bg-orange-500/10 text-orange-300 border border-orange-500/20': project.businessUnit === 'Commercial',
+                              'bg-teal-500/10 text-brand-teal border border-brand-teal/20': project.businessUnit === 'Technology'
+                            }"
+                            x-text="project.businessUnit"
+                      ></span>
+                    </td>
+                    
+                    <!-- Budget -->
+                    <td class="py-3.5 px-5 font-mono text-slate-300 font-semibold" x-text="formatCurrency(project.budget)"></td>
+                    
+                    <!-- Progress Bar -->
+                    <td class="py-3.5 px-5">
+                      <div class="flex items-center gap-2.5">
+                        <span class="font-mono text-[10px] text-slate-400 w-8 text-right font-bold" x-text="project.progress + '%'"></span>
+                        <div class="w-24 h-1.5 bg-brand-navy border border-brand-border/40 rounded-full overflow-hidden">
+                          <div 
+                            class="h-full rounded-full"
+                            :class="{
+                              'bg-brand-emerald': project.status === 'Completed',
+                              'bg-brand-risk': project.status === 'Delayed',
+                              'bg-brand-orange': project.status === 'Active'
+                            }"
+                            :style="'width: ' + project.progress + '%'"
+                          ></div>
+                        </div>
+                      </div>
+                    </td>
+
+                    <!-- Status -->
+                    <td class="py-3.5 px-5">
+                      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-bold"
+                            :class="{
+                              'bg-brand-emerald/10 text-brand-emerald border border-brand-emerald/25': project.status === 'Completed',
+                              'bg-brand-risk/10 text-brand-risk border border-brand-risk/25 animate-pulse': project.status === 'Delayed',
+                              'bg-brand-orange/10 text-slate-100 border border-brand-orange/25': project.status === 'Active'
+                            }"
+                      >
+                        <span class="h-1.5 w-1.5 rounded-full"
+                              :class="{
+                                'bg-brand-emerald': project.status === 'Completed',
+                                'bg-brand-risk': project.status === 'Delayed',
+                                'bg-brand-orange': project.status === 'Active'
+                              }"
+                        ></span>
+                        <span x-text="project.status"></span>
+                      </span>
+                    </td>
+                  </tr>
+                </template>
+
+                <tr x-show="filteredProjects().length === 0">
+                  <td colspan="7" class="py-8 text-center text-slate-500 font-mono">
+                    No active metrics found matching selected filters.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination row -->
+          <div class="p-4 bg-brand-navy/20 border-t border-brand-border/40 flex items-center justify-between text-xs" x-show="totalPages() > 1">
+            <span class="text-slate-400">Page <strong class="text-white" x-text="page"></strong> of <span x-text="totalPages()"></span></span>
+            <div class="flex items-center gap-2">
+              <button 
+                @click="page = Math.max(1, page - 1)" 
+                :disabled="page === 1"
+                class="px-3 py-1.5 bg-brand-slate hover:bg-brand-navy disabled:opacity-50 border border-brand-border text-slate-300 rounded-lg cursor-pointer"
+              >
+                Previous
+              </button>
+              <button 
+                @click="page = Math.min(totalPages(), page + 1)" 
+                :disabled="page === totalPages()"
+                class="px-3 py-1.5 bg-brand-slate hover:bg-brand-navy disabled:opacity-50 border border-brand-border text-slate-300 rounded-lg cursor-pointer"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- TAB 2: PRESENTATION DECK MODE -->
+      <div x-show="activeMenu === 'presentation'" class="space-y-6" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
+        
+        <!-- Deck Controller Bar -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between p-4 bg-brand-slate border border-brand-border rounded-2xl gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-brand-navy border border-brand-border flex items-center justify-center text-brand-orange">
+              <i data-lucide="presentation" class="w-5 h-5 animate-pulse"></i>
+            </div>
+            <div>
+              <h2 class="text-sm font-bold text-white uppercase tracking-wider font-mono">CIV Presentation System</h2>
+              <p class="text-xs text-slate-400 mt-0.5">Scalable slide environment matching GPPO design guidelines</p>
+            </div>
+          </div>
+
+          <div class="flex items-center flex-wrap gap-2">
+            <!-- Autoplay -->
+            <button
+              @click="toggleAutoplay()"
+              class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl border text-xs font-bold font-mono transition-all cursor-pointer"
+              :class="autoplayActive ? 'bg-brand-orange/10 text-brand-orange border-brand-orange/30' : 'bg-brand-navy text-slate-400 border-brand-border hover:text-white'"
+            >
+              <i :data-lucide="autoplayActive ? 'pause' : 'play'" class="w-3.5 h-3.5"></i>
+              <span x-text="autoplayActive ? 'PAUSE AUTOPLAY' : 'PLAY AUTOPLAY'"></span>
+            </button>
+
+            <!-- Fullscreen Emulate -->
+            <button
+              @click="toggleFullscreen()"
+              class="flex items-center gap-2 px-3.5 py-1.5 bg-brand-navy hover:bg-brand-slate border border-brand-border text-slate-300 hover:text-white rounded-xl text-xs font-bold font-mono transition-all cursor-pointer"
+            >
+              <i :data-lucide="fullscreenActive ? 'minimize-2' : 'maximize-2'" class="w-3.5 h-3.5"></i>
+              <span x-text="fullscreenActive ? 'WINDOWED' : 'FULLSCREEN'"></span>
+            </button>
+
+            <button
+              @click="activeMenu = 'overview'"
+              class="flex items-center gap-2 px-4 py-1.5 bg-brand-orange hover:bg-orange-600 text-white rounded-xl text-xs font-bold transition-all cursor-pointer shadow-md"
+            >
+              Back to Dashboard
+            </button>
+          </div>
+        </div>
+
+        <!-- Main Canvas Frame -->
+        <div 
+          class="relative overflow-hidden transition-all duration-300 border border-brand-border shadow-2xl bg-brand-slate"
+          :class="fullscreenActive ? 'fixed inset-0 z-50 p-12 flex flex-col justify-between' : 'aspect-[16/10] w-full rounded-3xl p-8 md:p-12 flex flex-col justify-between'"
+        >
+          <!-- Grid BG -->
+          <div class="absolute inset-0 bg-[linear-gradient(to_right,#111d37_1px,transparent_1px),linear-gradient(to_bottom,#111d37_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-30 pointer-events-none"></div>
+
+          <!-- Top metadata row -->
+          <div class="flex items-center justify-between opacity-80 z-10">
+            <div class="flex items-center gap-2.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-brand-orange animate-pulse"></span>
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono">
+                CIV DECK • Slide <span x-text="slide + 1"></span> of 4
+              </span>
+            </div>
+            <div class="text-[9px] font-bold text-slate-500 tracking-widest uppercase font-mono">
+              Assignment 2 • Multiple Slides System
+            </div>
+          </div>
+
+          <!-- Center slide switcher stage -->
+          <div class="flex-1 my-6 flex flex-col justify-center relative z-10 overflow-hidden">
+            
+            <!-- Slide 1: Cover -->
+            <div x-show="slide === 0" class="space-y-6 md:space-y-8 max-w-4xl" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-x-12" x-transition:enter-end="opacity-100 translate-x-0">
+              <div class="space-y-4">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-full bg-brand-orange/10 text-brand-orange border border-brand-orange/25 font-mono">
+                  <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                  Content Innovation & Visualization
+                </span>
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-white font-display tracking-tight leading-tight uppercase">
+                  Content Innovation <br />
+                  <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-brand-orange to-red-500">
+                    & Visualization
+                  </span>
+                </h1>
+              </div>
+
+              <p class="text-lg md:text-xl text-slate-300 leading-relaxed max-w-2xl font-light">
+                Supporting Research, Analytics, and Business Teams Through Design-Led Storytelling
+              </p>
+
+              <div class="pt-4 flex items-center gap-6 border-t border-brand-border/50 max-w-lg">
+                <div>
+                  <span class="block text-[9px] font-bold text-slate-400 tracking-wider uppercase font-mono">Target Audience</span>
+                  <span class="text-xs font-semibold text-white mt-1 block">Enterprise Strategic Teams</span>
+                </div>
+                <div class="w-px h-8 bg-brand-border"></div>
+                <div>
+                  <span class="block text-[9px] font-bold text-slate-400 tracking-wider uppercase font-mono">Creative Framework</span>
+                  <span class="text-xs font-semibold text-white mt-1 block">Scalable Presentation Logic</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Slide 2: About the Team -->
+            <div x-show="slide === 1" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start h-full" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-x-12" x-transition:enter-end="opacity-100 translate-x-0">
+              <div class="lg:col-span-4 space-y-4">
+                <span class="text-[10px] font-bold text-brand-orange uppercase tracking-widest font-mono">CIV Enterprise Role</span>
+                <h2 class="text-2xl md:text-3xl lg:text-4xl font-extrabold text-white font-display leading-tight uppercase">
+                  About <br>The Team
+                </h2>
+                <p class="text-sm text-slate-300 leading-relaxed">
+                  The CIV team supports a broad range of communication and insight delivery needs across the organization, translating complex structures into visually digestible executive assets.
+                </p>
+                <div class="p-3.5 bg-brand-orange/10 border border-brand-orange/25 rounded-xl text-xs text-brand-orange flex items-center gap-2.5 font-mono">
+                  <i data-lucide="mouse-pointer-click" class="w-4 h-4 shrink-0"></i>
+                  Hover cards to preview deliverables layout
+                </div>
+              </div>
+
+              <!-- Interactive Bento focus grids -->
+              <div class="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Card 1 -->
+                <div 
+                  @mouseenter="focusHover = 0" @mouseleave="focusHover = null"
+                  class="p-4 rounded-xl border transition-all duration-300 bg-brand-navy/50 border-brand-border/60"
+                  :class="focusHover === 0 ? 'bg-brand-slate border-brand-orange/40 shadow-lg' : ''"
+                >
+                  <div class="flex items-start gap-3.5">
+                    <div class="p-2.5 rounded-lg bg-brand-navy border border-brand-border text-brand-orange">
+                      <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                    </div>
+                    <div class="space-y-1">
+                      <h3 class="text-sm font-bold text-white transition-colors" :class="focusHover === 0 ? 'text-brand-orange' : ''">Interactive dashboards</h3>
+                      <p class="text-xs text-slate-400 leading-normal">Responsive, highly styled business intelligence layouts providing executive decision engines.</p>
+                      <div class="pt-2 flex items-center justify-between text-[10px] font-mono">
+                        <span class="text-slate-500">Key Metric</span>
+                        <span class="text-brand-orange font-bold">48% of project queue</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div 
+                  @mouseenter="focusHover = 1" @mouseleave="focusHover = null"
+                  class="p-4 rounded-xl border transition-all duration-300 bg-brand-navy/50 border-brand-border/60"
+                  :class="focusHover === 1 ? 'bg-brand-slate border-brand-orange/40 shadow-lg' : ''"
+                >
+                  <div class="flex items-start gap-3.5">
+                    <div class="p-2.5 rounded-lg bg-brand-navy border border-brand-border text-brand-orange">
+                      <i data-lucide="presentation" class="w-4 h-4"></i>
+                    </div>
+                    <div class="space-y-1">
+                      <h3 class="text-sm font-bold text-white transition-colors" :class="focusHover === 1 ? 'text-brand-orange' : ''">Executive presentations</h3>
+                      <p class="text-xs text-slate-400 leading-normal">High-stakes pitch decks, quarterly business reviews, and visual-first slide libraries.</p>
+                      <div class="pt-2 flex items-center justify-between text-[10px] font-mono">
+                        <span class="text-slate-500">Key Metric</span>
+                        <span class="text-brand-orange font-bold">Top organizational priority</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div 
+                  @mouseenter="focusHover = 2" @mouseleave="focusHover = null"
+                  class="p-4 rounded-xl border transition-all duration-300 bg-brand-navy/50 border-brand-border/60"
+                  :class="focusHover === 2 ? 'bg-brand-slate border-brand-orange/40 shadow-lg' : ''"
+                >
+                  <div class="flex items-start gap-3.5">
+                    <div class="p-2.5 rounded-lg bg-brand-navy border border-brand-border text-brand-orange">
+                      <i data-lucide="newspaper" class="w-4 h-4"></i>
+                    </div>
+                    <div class="space-y-1">
+                      <h3 class="text-sm font-bold text-white transition-colors" :class="focusHover === 2 ? 'text-brand-orange' : ''">Newsletters & publications</h3>
+                      <p class="text-xs text-slate-400 leading-normal">Polished digital reports, internal announcements, and high-frequency company insight letters.</p>
+                      <div class="pt-2 flex items-center justify-between text-[10px] font-mono">
+                        <span class="text-slate-500">Key Metric</span>
+                        <span class="text-brand-orange font-bold">Bi-weekly release schedules</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div 
+                  @mouseenter="focusHover = 3" @mouseleave="focusHover = null"
+                  class="p-4 rounded-xl border transition-all duration-300 bg-brand-navy/50 border-brand-border/60"
+                  :class="focusHover === 3 ? 'bg-brand-slate border-brand-orange/40 shadow-lg' : ''"
+                >
+                  <div class="flex items-start gap-3.5">
+                    <div class="p-2.5 rounded-lg bg-brand-navy border border-brand-border text-brand-orange">
+                      <i data-lucide="film" class="w-4 h-4"></i>
+                    </div>
+                    <div class="space-y-1">
+                      <h3 class="text-sm font-bold text-white transition-colors" :class="focusHover === 3 ? 'text-brand-orange' : ''">Video & motion graphics</h3>
+                      <p class="text-xs text-slate-400 leading-normal">Animated explainers, product launches, and narrative video summaries for strategic messaging.</p>
+                      <div class="pt-2 flex items-center justify-between text-[10px] font-mono">
+                        <span class="text-slate-500">Key Metric</span>
+                        <span class="text-brand-orange font-bold">98% audience engagement</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 5 (Full Width) -->
+                <div 
+                  @mouseenter="focusHover = 4" @mouseleave="focusHover = null"
+                  class="p-4 rounded-xl border transition-all duration-300 bg-brand-navy/50 border-brand-border/60 sm:col-span-2"
+                  :class="focusHover === 4 ? 'bg-brand-slate border-brand-orange/40 shadow-lg' : ''"
+                >
+                  <div class="flex items-start gap-3.5">
+                    <div class="p-2.5 rounded-lg bg-brand-navy border border-brand-border text-brand-orange">
+                      <i data-lucide="message-square" class="w-4 h-4"></i>
+                    </div>
+                    <div class="space-y-1">
+                      <h3 class="text-sm font-bold text-white transition-colors" :class="focusHover === 4 ? 'text-brand-orange' : ''">Data storytelling assets</h3>
+                      <p class="text-xs text-slate-400 leading-normal">Infographics, dynamic report templates, and tailored charts ready for immediate public launch.</p>
+                      <div class="pt-2 flex items-center justify-between text-[10px] font-mono">
+                        <span class="text-slate-500">Key Metric</span>
+                        <span class="text-brand-orange font-bold">100% vector scalable</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Slide 3: Growth Metrics Timeline -->
+            <div x-show="slide === 2" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center h-full" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-x-12" x-transition:enter-end="opacity-100 translate-x-0">
+              <div class="lg:col-span-4 space-y-5">
+                <div class="space-y-1">
+                  <span class="text-[10px] font-bold text-brand-orange uppercase tracking-widest font-mono">Project Metrics Timeline</span>
+                  <h2 class="text-2xl md:text-3xl lg:text-4xl font-extrabold text-white font-display uppercase">
+                    Growth in Volume
+                  </h2>
+                </div>
+
+                <p class="text-sm text-slate-300 leading-relaxed">
+                  Scale trajectory reflecting active design onboarding and increased integration of dynamic visualizations.
+                </p>
+
+                <!-- Dynamic Pills -->
+                <div class="grid grid-cols-4 gap-2">
+                  <template x-for="g in growth" :key="g.year">
+                    <button
+                      @click="selectedYear = g.year"
+                      class="py-2 rounded-xl text-xs font-bold font-mono border transition-all cursor-pointer"
+                      :class="selectedYear === g.year ? 'bg-brand-orange text-white border-brand-orange shadow-md' : 'bg-brand-navy/50 border-brand-border text-slate-400 hover:text-slate-200'"
+                      x-text="g.year"
+                    ></button>
+                  </template>
+                </div>
+
+                <!-- Info Block -->
+                <div class="p-4 bg-brand-navy border border-brand-border rounded-2xl space-y-3">
+                  <template x-for="g in growth" :key="g.year">
+                    <div x-show="selectedYear === g.year" class="space-y-2">
+                      <div class="flex items-center justify-between border-b border-brand-border/50 pb-2">
+                        <span class="text-[10px] font-bold text-slate-500 font-mono">Year</span>
+                        <span class="text-xs font-bold text-white font-mono" x-text="g.year"></span>
+                      </div>
+                      <div class="flex items-center justify-between border-b border-brand-border/50 pb-2">
+                        <span class="text-[10px] font-bold text-slate-500 font-mono">Deliverables Volume</span>
+                        <span class="text-sm font-black text-brand-orange font-mono" x-text="g.projects + ' Projects'"></span>
+                      </div>
+                      <div class="flex items-center justify-between border-b border-brand-border/50 pb-2">
+                        <span class="text-[10px] font-bold text-slate-500 font-mono">Growth Ratio</span>
+                        <span class="text-xs font-bold text-brand-emerald font-mono" x-text="g.rate"></span>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-bold text-slate-500 font-mono">Key Milestone</span>
+                        <span class="text-xs font-semibold text-slate-300" x-text="g.milestone"></span>
+                      </div>
+                    </div>
+                  </template>
+                </div>
+              </div>
+
+              <!-- Static Vector Growth Visualiser -->
+              <div class="lg:col-span-8 bg-brand-navy/40 border border-brand-border/60 rounded-2xl p-4 md:p-6 h-[260px] md:h-[320px] flex flex-col justify-between">
+                <div class="flex justify-between mb-2">
+                  <div>
+                    <h4 class="text-xs font-bold text-white">CIV Cumulative Annual Intake</h4>
+                    <p class="text-[10px] text-slate-500 font-mono">Aggregate volume trajectory (2021 - 2024)</p>
+                  </div>
+                  <span class="text-xs font-bold text-brand-emerald font-mono">+233% Overall</span>
+                </div>
+
+                <!-- Custom SVG Area Graph inside Standalone HTML -->
+                <div class="flex-1 relative w-full h-full min-h-[160px] mt-2">
+                  <svg class="w-full h-full" viewBox="0 0 500 200" preserveAspectRatio="none">
+                    <!-- Grid lines -->
+                    <line x1="0" y1="50" x2="500" y2="50" stroke="#1f3160" stroke-width="1" stroke-dasharray="3 3"/>
+                    <line x1="0" y1="100" x2="500" y2="100" stroke="#1f3160" stroke-width="1" stroke-dasharray="3 3"/>
+                    <line x1="0" y1="150" x2="500" y2="150" stroke="#1f3160" stroke-width="1" stroke-dasharray="3 3"/>
+                    
+                    <!-- Graph path -->
+                    <!-- 2021: 15 (y=160), 2022: 25 (y=140), 2023: 40 (y=90), 2024: 50 (y=50) -->
+                    <path d="M 50 160 Q 150 140, 250 90 T 450 50 L 450 190 L 50 190 Z" fill="url(#grad)" opacity="0.2" />
+                    <path d="M 50 160 Q 150 140, 250 90 T 450 50" fill="none" stroke="#f97316" stroke-width="4" stroke-linecap="round" />
+                    
+                    <!-- Dots -->
+                    <circle cx="50" cy="160" r="6" fill="#0a1128" stroke="#f97316" stroke-width="3" />
+                    <circle cx="183" cy="140" r="6" fill="#0a1128" stroke="#f97316" stroke-width="3" />
+                    <circle cx="316" cy="90" r="6" fill="#0a1128" stroke="#f97316" stroke-width="3" />
+                    <circle cx="450" cy="50" r="6" fill="#0a1128" stroke="#f97316" stroke-width="3" />
+
+                    <!-- Labels -->
+                    <text x="50" y="185" fill="#64748b" font-size="10" font-family="JetBrains Mono" text-anchor="middle">2021</text>
+                    <text x="183" y="185" fill="#64748b" font-size="10" font-family="JetBrains Mono" text-anchor="middle">2022</text>
+                    <text x="316" y="185" fill="#64748b" font-size="10" font-family="JetBrains Mono" text-anchor="middle">2023</text>
+                    <text x="450" y="185" fill="#64748b" font-size="10" font-family="JetBrains Mono" text-anchor="middle">2024</text>
+
+                    <!-- Value labels -->
+                    <text x="50" y="145" fill="#ffffff" font-size="10" font-family="JetBrains Mono" font-weight="bold" text-anchor="middle">15</text>
+                    <text x="183" y="125" fill="#ffffff" font-size="10" font-family="JetBrains Mono" font-weight="bold" text-anchor="middle">25</text>
+                    <text x="316" y="75" fill="#ffffff" font-size="10" font-family="JetBrains Mono" font-weight="bold" text-anchor="middle">40</text>
+                    <text x="450" y="35" fill="#ffffff" font-size="10" font-family="JetBrains Mono" font-weight="bold" text-anchor="middle">50+</text>
+
+                    <defs>
+                      <linearGradient id="grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#f97316" stop-opacity="0.8"/>
+                        <stop offset="100%" stop-color="#f97316" stop-opacity="0"/>
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Slide 4: Operational Workflow Journey -->
+            <div x-show="slide === 3" class="space-y-6 h-full flex flex-col justify-between" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-x-12" x-transition:enter-end="opacity-100 translate-x-0">
+              <div>
+                <span class="text-[10px] font-bold text-brand-orange uppercase tracking-widest font-mono">Operational Methodology</span>
+                <h2 class="text-2xl md:text-3xl font-extrabold text-white font-display mt-0.5 uppercase">
+                  Typical Project Journey
+                </h2>
+                <p class="text-xs text-slate-400 mt-1">
+                  Our systemized milestone design loop ensures delivery speed without losing layout accuracy.
+                </p>
+              </div>
+
+              <!-- Interactive step chevron indicators -->
+              <div class="grid grid-cols-2 md:grid-cols-6 gap-3 py-2">
+                <template x-for="(w, idx) in workflow" :key="w.step">
+                  <button
+                    @click="activeWorkflow = idx"
+                    class="p-3 rounded-xl border text-left transition-all duration-300 relative cursor-pointer group flex flex-col justify-between h-32"
+                    :class="activeWorkflow === idx ? 'bg-brand-slate border-brand-orange/50 shadow' : 'bg-brand-navy/40 border-brand-border/60 hover:border-brand-orange/20'"
+                  >
+                    <div>
+                      <span class="block text-xs font-mono font-black" :class="activeWorkflow === idx ? 'text-brand-orange' : 'text-slate-500'" x-text="w.step"></span>
+                      <h4 class="text-xs font-bold text-white mt-1.5 leading-tight group-hover:text-brand-orange transition-colors" x-text="w.title"></h4>
+                    </div>
+                    <div class="mt-2 flex items-center justify-between text-[10px] font-mono">
+                      <span class="text-slate-500" x-text="w.time"></span>
+                      <i data-lucide="check-circle" class="w-3.5 h-3.5 text-brand-orange" x-show="activeWorkflow === idx"></i>
+                    </div>
+                  </button>
+                </template>
+              </div>
+
+              <!-- Workflow Active Panel -->
+              <div class="p-4 bg-brand-navy border border-brand-border rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="space-y-1 max-w-xl">
+                  <div class="flex items-center gap-2 text-[10px] font-mono font-bold text-brand-orange uppercase">
+                    <i data-lucide="workflow" class="w-3.5 h-3.5"></i>
+                    Stage <span x-text="workflow[activeWorkflow].step"></span> Details
+                  </div>
+                  <h3 class="text-sm font-bold text-white" x-text="workflow[activeWorkflow].title"></h3>
+                  <p class="text-xs text-slate-300 leading-relaxed" x-text="workflow[activeWorkflow].desc"></p>
+                </div>
+
+                <div class="flex items-center gap-6 shrink-0 bg-brand-slate p-3 rounded-xl border border-brand-border/50">
+                  <div>
+                    <span class="block text-[8px] font-bold text-slate-500 uppercase tracking-widest font-mono">Timeline Allocation</span>
+                    <span class="text-xs font-bold text-white font-mono flex items-center gap-1 mt-0.5">
+                      <i data-lucide="clock" class="w-3.5 h-3.5 text-brand-orange"></i>
+                      <span x-text="workflow[activeWorkflow].time"></span>
+                    </span>
+                  </div>
+                  <div class="w-px h-6 bg-brand-border"></div>
+                  <div>
+                    <span class="block text-[8px] font-bold text-slate-500 uppercase tracking-widest font-mono">Principal Lead</span>
+                    <span class="text-xs font-bold text-slate-300 block mt-0.5" x-text="workflow[activeWorkflow].lead"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Bottom Presentation controls -->
+          <div class="flex items-center justify-between border-t border-brand-border/40 pt-5 z-10">
+            <!-- Indicator Dots -->
+            <div class="flex items-center gap-1.5">
+              <button @click="slide = 0" class="h-2 rounded-full transition-all cursor-pointer" :class="slide === 0 ? 'w-8 bg-brand-orange' : 'w-2 bg-brand-border hover:bg-slate-500'"></button>
+              <button @click="slide = 1" class="h-2 rounded-full transition-all cursor-pointer" :class="slide === 1 ? 'w-8 bg-brand-orange' : 'w-2 bg-brand-border hover:bg-slate-500'"></button>
+              <button @click="slide = 2" class="h-2 rounded-full transition-all cursor-pointer" :class="slide === 2 ? 'w-8 bg-brand-orange' : 'w-2 bg-brand-border hover:bg-slate-500'"></button>
+              <button @click="slide = 3" class="h-2 rounded-full transition-all cursor-pointer" :class="slide === 3 ? 'w-8 bg-brand-orange' : 'w-2 bg-brand-border hover:bg-slate-500'"></button>
+            </div>
+
+            <!-- Arrow Buttons -->
+            <div class="flex items-center gap-2">
+              <button
+                @click="slide = (slide - 1 + 4) % 4"
+                class="p-2 bg-brand-navy hover:bg-brand-slate border border-brand-border hover:border-brand-orange/40 text-slate-300 hover:text-white rounded-xl transition-all cursor-pointer"
+                title="Previous Slide"
+              >
+                <i data-lucide="chevron-left" class="w-4 h-4"></i>
+              </button>
+              <button
+                @click="slide = (slide + 1) % 4"
+                class="p-2 bg-brand-navy hover:bg-brand-slate border border-brand-border hover:border-brand-orange/40 text-slate-300 hover:text-white rounded-xl transition-all cursor-pointer"
+                title="Next Slide"
+              >
+                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Project details slide out drawer -->
+    <div 
+      x-show="drawerOpen"
+      class="fixed inset-y-0 right-0 w-full sm:w-[480px] bg-brand-navy border-l border-brand-border z-50 flex flex-col justify-between shadow-2xl transition-all duration-300 transform"
+      x-transition:enter="transition ease-out duration-300"
+      x-transition:enter-start="translate-x-full"
+      x-transition:enter-end="translate-x-0"
+      x-transition:leave="transition ease-in duration-300"
+      x-transition:leave-start="translate-x-0"
+      x-transition:leave-end="translate-x-full"
+    >
+      <div class="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin">
+        <!-- Close Button & Header -->
+        <div class="flex items-center justify-between border-b border-brand-border/40 pb-4">
+          <div class="flex items-center gap-2 text-xs font-mono font-bold text-slate-500">
+            <i data-lucide="file-text" class="w-4 h-4 text-brand-orange"></i>
+            <span x-text="selectedProject?.id"></span>
+          </div>
+          <button @click="drawerOpen = false" class="p-2 bg-brand-slate hover:bg-white/5 text-slate-400 hover:text-white rounded-xl border border-brand-border cursor-pointer">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Title -->
+        <div class="space-y-2">
+          <h2 class="text-xl font-black text-white font-display tracking-tight" x-text="selectedProject?.name"></h2>
+          
+          <div class="flex flex-wrap items-center gap-2 pt-1">
+            <!-- Timeline status -->
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold"
+                  :class="{
+                    'bg-brand-emerald/10 text-brand-emerald border border-brand-emerald/20': selectedProject?.status === 'Completed',
+                    'bg-brand-risk/10 text-brand-risk border border-brand-risk/20 animate-pulse': selectedProject?.status === 'Delayed',
+                    'bg-brand-orange/10 text-slate-100 border border-brand-orange/20': selectedProject?.status === 'Active'
+                  }"
+            >
+              <span class="h-1 w-1 rounded-full"
+                    :class="{
+                      'bg-brand-emerald': selectedProject?.status === 'Completed',
+                      'bg-brand-risk': selectedProject?.status === 'Delayed',
+                      'bg-brand-orange': selectedProject?.status === 'Active'
+                    }"
+              ></span>
+              <span x-text="selectedProject?.status"></span>
+            </span>
+
+            <!-- Priority -->
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-[10px] font-mono font-bold"
+                  :class="{
+                    'bg-red-500/10 text-red-300 border border-red-500/20': selectedProject?.priority === 'High',
+                    'bg-orange-500/10 text-orange-300 border border-orange-500/20': selectedProject?.priority === 'Medium',
+                    'bg-slate-500/10 text-slate-300 border border-slate-500/20': selectedProject?.priority === 'Low'
+                  }"
+            >
+              Priority: <span x-text="selectedProject?.priority"></span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Progress Bar Segment -->
+        <div class="p-4 bg-brand-slate border border-brand-border rounded-xl space-y-2.5">
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-slate-400 font-medium">Initiative Progression</span>
+            <span class="font-mono text-white font-bold" x-text="(selectedProject?.progress || 0) + '%'"></span>
+          </div>
+          <div class="h-2 w-full bg-brand-navy border border-brand-border/40 rounded-full overflow-hidden">
+            <div 
+              class="h-full rounded-full transition-all duration-500"
+              :class="{
+                'bg-brand-emerald': selectedProject?.status === 'Completed',
+                'bg-brand-risk': selectedProject?.status === 'Delayed',
+                'bg-brand-orange': selectedProject?.status === 'Active'
+              }"
+              :style="'width: ' + (selectedProject?.progress || 0) + '%'"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Metrics Overview grid -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="p-3.5 bg-brand-slate border border-brand-border rounded-xl">
+            <span class="block text-[9px] font-bold text-slate-500 uppercase tracking-widest font-mono">Capital Budget</span>
+            <span class="block text-sm font-bold text-white font-mono mt-1" x-text="formatCurrency(selectedProject?.budget || 0)"></span>
+          </div>
+          <div class="p-3.5 bg-brand-slate border border-brand-border rounded-xl">
+            <span class="block text-[9px] font-bold text-slate-500 uppercase tracking-widest font-mono">Business Unit</span>
+            <span class="block text-sm font-bold text-slate-300 mt-1" x-text="selectedProject?.businessUnit"></span>
+          </div>
+          <div class="p-3.5 bg-brand-slate border border-brand-border rounded-xl">
+            <span class="block text-[9px] font-bold text-slate-500 uppercase tracking-widest font-mono">Geography Scope</span>
+            <span class="block text-sm font-bold text-slate-300 mt-1" x-text="selectedProject?.region"></span>
+          </div>
+          <div class="p-3.5 bg-brand-slate border border-brand-border rounded-xl">
+            <span class="block text-[9px] font-bold text-slate-500 uppercase tracking-widest font-mono">Active Quarter</span>
+            <span class="block text-sm font-bold text-slate-300 mt-1" x-text="selectedProject?.quarter"></span>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="space-y-1.5">
+          <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-mono">Description and Scope</h4>
+          <p class="text-xs text-slate-300 leading-relaxed bg-brand-slate border border-brand-border/50 p-4 rounded-xl" x-text="selectedProject?.description"></p>
+        </div>
+
+        <!-- Remediation warning for delayed -->
+        <template x-if="selectedProject?.status === 'Delayed'">
+          <div class="p-4 bg-brand-risk/10 border border-brand-risk/20 rounded-xl flex gap-3">
+            <i data-lucide="alert-circle" class="w-5 h-5 text-brand-risk shrink-0 mt-0.5"></i>
+            <div>
+              <h5 class="text-xs font-bold text-brand-risk uppercase tracking-wider font-mono">Remediation Alert</h5>
+              <p class="text-xs text-red-200 mt-1 leading-relaxed">
+                This initiative has fallen behind its quarterly timeline milestones. A review meeting is required with <strong x-text="selectedProject?.lead"></strong> to assign remediation tasks.
+              </p>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <!-- Drawer Footer -->
+      <div class="p-6 bg-brand-slate border-t border-brand-border flex items-center justify-between shrink-0">
+        <div>
+          <span class="block text-[8px] font-bold text-slate-500 uppercase tracking-widest font-mono">Strategic Sponsor</span>
+          <span class="text-xs font-bold text-white block mt-0.5" x-text="selectedProject?.lead"></span>
+        </div>
+        <button @click="drawerOpen = false" class="px-4 py-2 bg-brand-navy hover:bg-brand-slate border border-brand-border text-slate-300 hover:text-white rounded-xl text-xs font-bold transition-all cursor-pointer">
+          Acknowledge View
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function portfolioApp() {
+      return {
+        // App states
+        activeMenu: 'overview',
+        search: '',
+        region: '',
+        bu: '',
+        quarter: '',
+        type: '',
+        page: 1,
+        itemsPerPage: 10,
+        
+        // Drawer states
+        drawerOpen: false,
+        selectedProject: null,
+
+        // Slides states
+        slide: 0,
+        autoplayActive: false,
+        autoplayTimer: null,
+        fullscreenActive: false,
+        focusHover: null,
+        selectedYear: '2024',
+        activeWorkflow: 0,
+
+        // Database seed
+        projects: [
+  {
+    "id": "PRJ-101",
+    "name": "Next-Gen Materials Synthesis",
+    "description": "Deep tech scientific exploration and prototyping of fundamental industrial layers. Focus Area #1.",
+    "businessUnit": "Research",
+    "status": "Active",
+    "region": "North America",
+    "quarter": "Q1",
+    "projectType": "Software",
+    "monthCreated": "Jan",
+    "budget": 150000,
+    "progress": 15,
+    "lead": "Sarah Jenkins",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-102",
+    "name": "Quantum Computing Alloys",
+    "description": "Deep tech scientific exploration and prototyping of fundamental industrial layers. Focus Area #3.",
+    "businessUnit": "Research",
+    "status": "Active",
+    "region": "Europe",
+    "quarter": "Q4",
+    "projectType": "Operations",
+    "monthCreated": "Jan",
+    "budget": 162345,
+    "progress": 44,
+    "lead": "Sofia Rodriguez",
+    "priority": "Medium"
+  },
+  {
+    "id": "PRJ-103",
+    "name": "Sub-Zero Thermal Shielding",
+    "description": "Deep tech scientific exploration and prototyping of fundamental industrial layers. Focus Area #5.",
+    "businessUnit": "Research",
+    "status": "Active",
+    "region": "Asia-Pacific",
+    "quarter": "Q3",
+    "projectType": "Consulting",
+    "monthCreated": "Jan",
+    "budget": 174690,
+    "progress": 73,
+    "lead": "Amara Diallo",
+    "priority": "Low"
+  },
+  {
+    "id": "PRJ-104",
+    "name": "Bio-degradable Polymer Trial",
+    "description": "Deep tech scientific exploration and prototyping of fundamental industrial layers. Focus Area #2.",
+    "businessUnit": "Research",
+    "status": "Active",
+    "region": "Latin America",
+    "quarter": "Q2",
+    "projectType": "Research",
+    "monthCreated": "Jan",
+    "budget": 187035,
+    "progress": 27,
+    "lead": "Marcus Chen",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-105",
+    "name": "Neuromorphic Sensor Prototype",
+    "description": "Deep tech scientific exploration and prototyping of fundamental industrial layers. Focus Area #4.",
+    "businessUnit": "Research",
+    "status": "Active",
+    "region": "North America",
+    "quarter": "Q1",
+    "projectType": "Software",
+    "monthCreated": "Jan",
+    "budget": 199380,
+    "progress": 56,
+    "lead": "Liam O'Connor",
+    "priority": "Medium"
+  },
+  {
+    "id": "PRJ-106",
+    "name": "Deep Space Telescope Array",
+    "description": "Deep tech scientific exploration and prototyping of fundamental industrial layers. Focus Area #1.",
+    "businessUnit": "Research",
+    "status": "Active",
+    "region": "Europe",
+    "quarter": "Q4",
+    "projectType": "Operations",
+    "monthCreated": "Jan",
+    "budget": 211725,
+    "progress": 85,
+    "lead": "Yuki Tanaka",
+    "priority": "Low"
+  },
+  {
+    "id": "PRJ-107",
+    "name": "Graphene Supercapacitor R&D",
+    "description": "Deep tech scientific exploration and prototyping of fundamental industrial layers. Focus Area #3.",
+    "businessUnit": "Research",
+    "status": "Active",
+    "region": "Asia-Pacific",
+    "quarter": "Q3",
+    "projectType": "Consulting",
+    "monthCreated": "Jan",
+    "budget": 224070,
+    "progress": 39,
+    "lead": "Elena Rostova",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-108",
+    "name": "Cellular Re-engineering Probe",
+    "description": "Deep tech scientific exploration and prototyping of fundamental industrial layers. Focus Area #5.",
+    "businessUnit": "Research",
+    "status": "Active",
+    "region": "Latin America",
+    "quarter": "Q2",
+    "projectType": "Research",
+    "monthCreated": "Jan",
+    "budget": 236415,
+    "progress": 68,
+    "lead": "Zoe Kaufmann",
+    "priority": "Medium"
+  },
+  {
+    "id": "PRJ-109",
+    "name": "Fusion Reactor Heat Sink",
+    "description": "Deep tech scientific exploration and prototyping of fundamental industrial layers. Focus Area #2.",
+    "businessUnit": "Research",
+    "status": "Active",
+    "region": "North America",
+    "quarter": "Q1",
+    "projectType": "Software",
+    "monthCreated": "Feb",
+    "budget": 248760,
+    "progress": 22,
+    "lead": "Oliver Bennett",
+    "priority": "Low"
+  },
+  {
+    "id": "PRJ-110",
+    "name": "Autonomous Drone Aerodynamics",
+    "description": "Deep tech scientific exploration and prototyping of fundamental industrial layers. Focus Area #4.",
+    "businessUnit": "Research",
+    "status": "Active",
+    "region": "Europe",
+    "quarter": "Q4",
+    "projectType": "Operations",
+    "monthCreated": "Feb",
+    "budget": 261105,
+    "progress": 51,
+    "lead": "David Vance",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-111",
+    "name": "Synthesized Protein Matrix",
+    "description": "Deep tech scientific exploration and prototyping of fundamental industrial layers. Focus Area #1.",
+    "businessUnit": "Research",
+    "status": "Active",
+    "region": "Asia-Pacific",
+    "quarter": "Q3",
+    "projectType": "Consulting",
+    "monthCreated": "Feb",
+    "budget": 273450,
+    "progress": 80,
+    "lead": "Sarah Jenkins",
+    "priority": "Medium"
+  },
+  {
+    "id": "PRJ-112",
+    "name": "Carbon Capture Catalyst",
+    "description": "Deep tech scientific exploration and prototyping of fundamental industrial layers. Focus Area #3.",
+    "businessUnit": "Research",
+    "status": "Active",
+    "region": "Latin America",
+    "quarter": "Q2",
+    "projectType": "Research",
+    "monthCreated": "Feb",
+    "budget": 285795,
+    "progress": 34,
+    "lead": "Sofia Rodriguez",
+    "priority": "Low"
+  },
+  {
+    "id": "PRJ-113",
+    "name": "Solid-State Battery Assembly",
+    "description": "Deep tech scientific exploration and prototyping of fundamental industrial layers. Focus Area #5.",
+    "businessUnit": "Research",
+    "status": "Active",
+    "region": "North America",
+    "quarter": "Q1",
+    "projectType": "Software",
+    "monthCreated": "Feb",
+    "budget": 298140,
+    "progress": 63,
+    "lead": "Amara Diallo",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-114",
+    "name": "Electromagnetic Shielding Foam",
+    "description": "Deep tech scientific exploration and prototyping of fundamental industrial layers. Focus Area #2.",
+    "businessUnit": "Research",
+    "status": "Active",
+    "region": "Europe",
+    "quarter": "Q4",
+    "projectType": "Operations",
+    "monthCreated": "Feb",
+    "budget": 310485,
+    "progress": 17,
+    "lead": "Marcus Chen",
+    "priority": "Medium"
+  },
+  {
+    "id": "PRJ-115",
+    "name": "Neuro-Link Interface Core",
+    "description": "Deep tech scientific exploration and prototyping of fundamental industrial layers. Focus Area #4.",
+    "businessUnit": "Research",
+    "status": "Active",
+    "region": "Asia-Pacific",
+    "quarter": "Q3",
+    "projectType": "Consulting",
+    "monthCreated": "Feb",
+    "budget": 322830,
+    "progress": 46,
+    "lead": "Liam O'Connor",
+    "priority": "Low"
+  },
+  {
+    "id": "PRJ-116",
+    "name": "Hydrothermal Power Membrane",
+    "description": "Deep tech scientific exploration and prototyping of fundamental industrial layers. Focus Area #1.",
+    "businessUnit": "Research",
+    "status": "Active",
+    "region": "Latin America",
+    "quarter": "Q2",
+    "projectType": "Research",
+    "monthCreated": "Feb",
+    "budget": 335175,
+    "progress": 75,
+    "lead": "Yuki Tanaka",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-117",
+    "name": "Algal Fuel Filtration System",
+    "description": "Deep tech scientific exploration and prototyping of fundamental industrial layers. Focus Area #3.",
+    "businessUnit": "Research",
+    "status": "Active",
+    "region": "North America",
+    "quarter": "Q1",
+    "projectType": "Software",
+    "monthCreated": "Feb",
+    "budget": 347520,
+    "progress": 29,
+    "lead": "Elena Rostova",
+    "priority": "Medium"
+  },
+  {
+    "id": "PRJ-118",
+    "name": "Optical Computing Gate",
+    "description": "Deep tech scientific exploration and prototyping of fundamental industrial layers. Focus Area #5.",
+    "businessUnit": "Research",
+    "status": "Active",
+    "region": "Europe",
+    "quarter": "Q4",
+    "projectType": "Operations",
+    "monthCreated": "Feb",
+    "budget": 359865,
+    "progress": 58,
+    "lead": "Zoe Kaufmann",
+    "priority": "Low"
+  },
+  {
+    "id": "PRJ-119",
+    "name": "Ad-spend ROI Attribution",
+    "description": "Data science models and analytics tools focused on unlocking enterprise performance. Focus Area #2.",
+    "businessUnit": "Analytics",
+    "status": "Active",
+    "region": "Asia-Pacific",
+    "quarter": "Q3",
+    "projectType": "Consulting",
+    "monthCreated": "Mar",
+    "budget": 372210,
+    "progress": 87,
+    "lead": "Oliver Bennett",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-120",
+    "name": "Yield Curve Forecaster",
+    "description": "Data science models and analytics tools focused on unlocking enterprise performance. Focus Area #4.",
+    "businessUnit": "Analytics",
+    "status": "Active",
+    "region": "Latin America",
+    "quarter": "Q2",
+    "projectType": "Research",
+    "monthCreated": "Mar",
+    "budget": 384555,
+    "progress": 41,
+    "lead": "David Vance",
+    "priority": "Medium"
+  },
+  {
+    "id": "PRJ-121",
+    "name": "Market Share Simulator",
+    "description": "Data science models and analytics tools focused on unlocking enterprise performance. Focus Area #1.",
+    "businessUnit": "Analytics",
+    "status": "Active",
+    "region": "North America",
+    "quarter": "Q1",
+    "projectType": "Software",
+    "monthCreated": "Mar",
+    "budget": 396900,
+    "progress": 70,
+    "lead": "Sarah Jenkins",
+    "priority": "Low"
+  },
+  {
+    "id": "PRJ-122",
+    "name": "Healthcare Outcomes Model",
+    "description": "Data science models and analytics tools focused on unlocking enterprise performance. Focus Area #3.",
+    "businessUnit": "Analytics",
+    "status": "Active",
+    "region": "Europe",
+    "quarter": "Q4",
+    "projectType": "Operations",
+    "monthCreated": "Mar",
+    "budget": 409245,
+    "progress": 24,
+    "lead": "Sofia Rodriguez",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-123",
+    "name": "Predictive Customer Engine",
+    "description": "Data science models and analytics tools focused on unlocking enterprise performance. Focus Area #5.",
+    "businessUnit": "Analytics",
+    "status": "Active",
+    "region": "Asia-Pacific",
+    "quarter": "Q3",
+    "projectType": "Consulting",
+    "monthCreated": "Mar",
+    "budget": 421590,
+    "progress": 53,
+    "lead": "Amara Diallo",
+    "priority": "Medium"
+  },
+  {
+    "id": "PRJ-124",
+    "name": "Global Fleet Telematics",
+    "description": "Data science models and analytics tools focused on unlocking enterprise performance. Focus Area #2.",
+    "businessUnit": "Analytics",
+    "status": "Active",
+    "region": "Latin America",
+    "quarter": "Q2",
+    "projectType": "Research",
+    "monthCreated": "Mar",
+    "budget": 433935,
+    "progress": 82,
+    "lead": "Marcus Chen",
+    "priority": "Low"
+  },
+  {
+    "id": "PRJ-125",
+    "name": "Supply Chain Bottleneck Finder",
+    "description": "Data science models and analytics tools focused on unlocking enterprise performance. Focus Area #4.",
+    "businessUnit": "Analytics",
+    "status": "Active",
+    "region": "North America",
+    "quarter": "Q1",
+    "projectType": "Software",
+    "monthCreated": "Mar",
+    "budget": 446280,
+    "progress": 36,
+    "lead": "Liam O'Connor",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-126",
+    "name": "Real-time Churn Forecaster",
+    "description": "Data science models and analytics tools focused on unlocking enterprise performance. Focus Area #1.",
+    "businessUnit": "Analytics",
+    "status": "Active",
+    "region": "Europe",
+    "quarter": "Q4",
+    "projectType": "Operations",
+    "monthCreated": "Mar",
+    "budget": 458625,
+    "progress": 65,
+    "lead": "Yuki Tanaka",
+    "priority": "Medium"
+  },
+  {
+    "id": "PRJ-127",
+    "name": "Behavioral Clustering Engine",
+    "description": "Data science models and analytics tools focused on unlocking enterprise performance. Focus Area #3.",
+    "businessUnit": "Analytics",
+    "status": "Active",
+    "region": "Asia-Pacific",
+    "quarter": "Q3",
+    "projectType": "Consulting",
+    "monthCreated": "Mar",
+    "budget": 470970,
+    "progress": 19,
+    "lead": "Elena Rostova",
+    "priority": "Low"
+  },
+  {
+    "id": "PRJ-128",
+    "name": "Multi-channel Revenue Attribution",
+    "description": "Data science models and analytics tools focused on unlocking enterprise performance. Focus Area #5.",
+    "businessUnit": "Analytics",
+    "status": "Active",
+    "region": "Latin America",
+    "quarter": "Q2",
+    "projectType": "Research",
+    "monthCreated": "Mar",
+    "budget": 483315,
+    "progress": 48,
+    "lead": "Zoe Kaufmann",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-129",
+    "name": "Inventory Level Optimizer",
+    "description": "Data science models and analytics tools focused on unlocking enterprise performance. Focus Area #2.",
+    "businessUnit": "Analytics",
+    "status": "Active",
+    "region": "North America",
+    "quarter": "Q1",
+    "projectType": "Software",
+    "monthCreated": "Mar",
+    "budget": 495660,
+    "progress": 77,
+    "lead": "Oliver Bennett",
+    "priority": "Medium"
+  },
+  {
+    "id": "PRJ-130",
+    "name": "Demographic Segmentation Hub",
+    "description": "Data science models and analytics tools focused on unlocking enterprise performance. Focus Area #4.",
+    "businessUnit": "Analytics",
+    "status": "Active",
+    "region": "Europe",
+    "quarter": "Q4",
+    "projectType": "Operations",
+    "monthCreated": "Mar",
+    "budget": 508005,
+    "progress": 31,
+    "lead": "David Vance",
+    "priority": "Low"
+  },
+  {
+    "id": "PRJ-131",
+    "name": "Pricing Elasticity Calculator",
+    "description": "Data science models and analytics tools focused on unlocking enterprise performance. Focus Area #1.",
+    "businessUnit": "Analytics",
+    "status": "Active",
+    "region": "Asia-Pacific",
+    "quarter": "Q3",
+    "projectType": "Consulting",
+    "monthCreated": "Apr",
+    "budget": 520350,
+    "progress": 60,
+    "lead": "Sarah Jenkins",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-132",
+    "name": "Anomaly Detection Pipeline",
+    "description": "Data science models and analytics tools focused on unlocking enterprise performance. Focus Area #3.",
+    "businessUnit": "Analytics",
+    "status": "Active",
+    "region": "Latin America",
+    "quarter": "Q2",
+    "projectType": "Research",
+    "monthCreated": "Apr",
+    "budget": 532695,
+    "progress": 89,
+    "lead": "Sofia Rodriguez",
+    "priority": "Medium"
+  },
+  {
+    "id": "PRJ-133",
+    "name": "Logistics Routing Neural Net",
+    "description": "Data science models and analytics tools focused on unlocking enterprise performance. Focus Area #5.",
+    "businessUnit": "Analytics",
+    "status": "Active",
+    "region": "North America",
+    "quarter": "Q1",
+    "projectType": "Software",
+    "monthCreated": "Apr",
+    "budget": 545040,
+    "progress": 43,
+    "lead": "Amara Diallo",
+    "priority": "Low"
+  },
+  {
+    "id": "PRJ-134",
+    "name": "Sentiment Mining Dashboard",
+    "description": "Data science models and analytics tools focused on unlocking enterprise performance. Focus Area #2.",
+    "businessUnit": "Analytics",
+    "status": "Active",
+    "region": "Europe",
+    "quarter": "Q4",
+    "projectType": "Operations",
+    "monthCreated": "Apr",
+    "budget": 557385,
+    "progress": 72,
+    "lead": "Marcus Chen",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-135",
+    "name": "Asset Lifecycle Analyzer",
+    "description": "Data science models and analytics tools focused on unlocking enterprise performance. Focus Area #4.",
+    "businessUnit": "Analytics",
+    "status": "Completed",
+    "region": "Asia-Pacific",
+    "quarter": "Q3",
+    "projectType": "Consulting",
+    "monthCreated": "Apr",
+    "budget": 569730,
+    "progress": 100,
+    "lead": "Liam O'Connor",
+    "priority": "Medium"
+  },
+  {
+    "id": "PRJ-136",
+    "name": "Retail Footfall Predictive API",
+    "description": "Data science models and analytics tools focused on unlocking enterprise performance. Focus Area #1.",
+    "businessUnit": "Analytics",
+    "status": "Completed",
+    "region": "Latin America",
+    "quarter": "Q2",
+    "projectType": "Research",
+    "monthCreated": "Apr",
+    "budget": 582075,
+    "progress": 100,
+    "lead": "Yuki Tanaka",
+    "priority": "Low"
+  },
+  {
+    "id": "PRJ-137",
+    "name": "Energy Grid Load Forecast",
+    "description": "Data science models and analytics tools focused on unlocking enterprise performance. Focus Area #3.",
+    "businessUnit": "Analytics",
+    "status": "Completed",
+    "region": "North America",
+    "quarter": "Q1",
+    "projectType": "Software",
+    "monthCreated": "Apr",
+    "budget": 594420,
+    "progress": 100,
+    "lead": "Elena Rostova",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-138",
+    "name": "SaaS Usage Cohort Analyzer",
+    "description": "Data science models and analytics tools focused on unlocking enterprise performance. Focus Area #5.",
+    "businessUnit": "Analytics",
+    "status": "Completed",
+    "region": "Europe",
+    "quarter": "Q4",
+    "projectType": "Operations",
+    "monthCreated": "Apr",
+    "budget": 606765,
+    "progress": 100,
+    "lead": "Zoe Kaufmann",
+    "priority": "Medium"
+  },
+  {
+    "id": "PRJ-139",
+    "name": "Dynamic Discounting Matrix",
+    "description": "Data science models and analytics tools focused on unlocking enterprise performance. Focus Area #2.",
+    "businessUnit": "Analytics",
+    "status": "Completed",
+    "region": "Asia-Pacific",
+    "quarter": "Q3",
+    "projectType": "Consulting",
+    "monthCreated": "Apr",
+    "budget": 619110,
+    "progress": 100,
+    "lead": "Oliver Bennett",
+    "priority": "Low"
+  },
+  {
+    "id": "PRJ-140",
+    "name": "Omni-channel Journey Mapper",
+    "description": "Data science models and analytics tools focused on unlocking enterprise performance. Focus Area #4.",
+    "businessUnit": "Analytics",
+    "status": "Completed",
+    "region": "Latin America",
+    "quarter": "Q2",
+    "projectType": "Research",
+    "monthCreated": "May",
+    "budget": 631455,
+    "progress": 100,
+    "lead": "David Vance",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-141",
+    "name": "Market Volatility Circuit Breaker",
+    "description": "Compliance, security, and market risk mitigations to secure long-term capital. Focus Area #1.",
+    "businessUnit": "Risk",
+    "status": "Completed",
+    "region": "North America",
+    "quarter": "Q1",
+    "projectType": "Software",
+    "monthCreated": "May",
+    "budget": 643800,
+    "progress": 100,
+    "lead": "Sarah Jenkins",
+    "priority": "Medium"
+  },
+  {
+    "id": "PRJ-142",
+    "name": "Corporate Governance Assessor",
+    "description": "Compliance, security, and market risk mitigations to secure long-term capital. Focus Area #3.",
+    "businessUnit": "Risk",
+    "status": "Completed",
+    "region": "Europe",
+    "quarter": "Q4",
+    "projectType": "Operations",
+    "monthCreated": "May",
+    "budget": 656145,
+    "progress": 100,
+    "lead": "Sofia Rodriguez",
+    "priority": "Low"
+  },
+  {
+    "id": "PRJ-143",
+    "name": "Automated Fraud Shield",
+    "description": "Compliance, security, and market risk mitigations to secure long-term capital. Focus Area #5.",
+    "businessUnit": "Risk",
+    "status": "Completed",
+    "region": "Asia-Pacific",
+    "quarter": "Q3",
+    "projectType": "Consulting",
+    "monthCreated": "May",
+    "budget": 668490,
+    "progress": 100,
+    "lead": "Amara Diallo",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-144",
+    "name": "Credit Underwriting Scorer",
+    "description": "Compliance, security, and market risk mitigations to secure long-term capital. Focus Area #2.",
+    "businessUnit": "Risk",
+    "status": "Completed",
+    "region": "Latin America",
+    "quarter": "Q2",
+    "projectType": "Research",
+    "monthCreated": "May",
+    "budget": 680835,
+    "progress": 100,
+    "lead": "Marcus Chen",
+    "priority": "Medium"
+  },
+  {
+    "id": "PRJ-145",
+    "name": "Liquidity Stress-Testing Suite",
+    "description": "Compliance, security, and market risk mitigations to secure long-term capital. Focus Area #4.",
+    "businessUnit": "Risk",
+    "status": "Completed",
+    "region": "North America",
+    "quarter": "Q1",
+    "projectType": "Software",
+    "monthCreated": "May",
+    "budget": 693180,
+    "progress": 100,
+    "lead": "Liam O'Connor",
+    "priority": "Low"
+  },
+  {
+    "id": "PRJ-146",
+    "name": "Cyber-Vulnerability Audit App",
+    "description": "Compliance, security, and market risk mitigations to secure long-term capital. Focus Area #1.",
+    "businessUnit": "Risk",
+    "status": "Completed",
+    "region": "Europe",
+    "quarter": "Q4",
+    "projectType": "Operations",
+    "monthCreated": "May",
+    "budget": 705525,
+    "progress": 100,
+    "lead": "Yuki Tanaka",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-147",
+    "name": "Regulatory Compliance Sentinel",
+    "description": "Compliance, security, and market risk mitigations to secure long-term capital. Focus Area #3.",
+    "businessUnit": "Risk",
+    "status": "Completed",
+    "region": "Asia-Pacific",
+    "quarter": "Q3",
+    "projectType": "Consulting",
+    "monthCreated": "May",
+    "budget": 717870,
+    "progress": 100,
+    "lead": "Elena Rostova",
+    "priority": "Medium"
+  },
+  {
+    "id": "PRJ-148",
+    "name": "Foreign Exchange Hedge Ledger",
+    "description": "Compliance, security, and market risk mitigations to secure long-term capital. Focus Area #5.",
+    "businessUnit": "Risk",
+    "status": "Completed",
+    "region": "Latin America",
+    "quarter": "Q2",
+    "projectType": "Research",
+    "monthCreated": "May",
+    "budget": 730215,
+    "progress": 100,
+    "lead": "Zoe Kaufmann",
+    "priority": "Low"
+  },
+  {
+    "id": "PRJ-149",
+    "name": "Counterparty Exposure Analyzer",
+    "description": "Compliance, security, and market risk mitigations to secure long-term capital. Focus Area #2.",
+    "businessUnit": "Risk",
+    "status": "Completed",
+    "region": "North America",
+    "quarter": "Q1",
+    "projectType": "Software",
+    "monthCreated": "May",
+    "budget": 742560,
+    "progress": 100,
+    "lead": "Oliver Bennett",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-150",
+    "name": "Sovereign Debt Default Estimator",
+    "description": "Compliance, security, and market risk mitigations to secure long-term capital. Focus Area #4.",
+    "businessUnit": "Risk",
+    "status": "Completed",
+    "region": "Europe",
+    "quarter": "Q4",
+    "projectType": "Operations",
+    "monthCreated": "May",
+    "budget": 754905,
+    "progress": 100,
+    "lead": "David Vance",
+    "priority": "Medium"
+  },
+  {
+    "id": "PRJ-151",
+    "name": "Supply Chain Solvency Audit",
+    "description": "Compliance, security, and market risk mitigations to secure long-term capital. Focus Area #1.",
+    "businessUnit": "Risk",
+    "status": "Completed",
+    "region": "Asia-Pacific",
+    "quarter": "Q3",
+    "projectType": "Consulting",
+    "monthCreated": "May",
+    "budget": 767250,
+    "progress": 100,
+    "lead": "Sarah Jenkins",
+    "priority": "Low"
+  },
+  {
+    "id": "PRJ-152",
+    "name": "Geopolitical Threat Monitor",
+    "description": "Compliance, security, and market risk mitigations to secure long-term capital. Focus Area #3.",
+    "businessUnit": "Risk",
+    "status": "Completed",
+    "region": "Latin America",
+    "quarter": "Q2",
+    "projectType": "Research",
+    "monthCreated": "May",
+    "budget": 779595,
+    "progress": 100,
+    "lead": "Sofia Rodriguez",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-153",
+    "name": "Climate Transition Risk Modeler",
+    "description": "Compliance, security, and market risk mitigations to secure long-term capital. Focus Area #5.",
+    "businessUnit": "Risk",
+    "status": "Completed",
+    "region": "North America",
+    "quarter": "Q1",
+    "projectType": "Software",
+    "monthCreated": "May",
+    "budget": 791940,
+    "progress": 100,
+    "lead": "Amara Diallo",
+    "priority": "Medium"
+  },
+  {
+    "id": "PRJ-154",
+    "name": "Anti-Money Laundering Tracker",
+    "description": "Compliance, security, and market risk mitigations to secure long-term capital. Focus Area #2.",
+    "businessUnit": "Risk",
+    "status": "Completed",
+    "region": "Europe",
+    "quarter": "Q4",
+    "projectType": "Operations",
+    "monthCreated": "Jun",
+    "budget": 804285,
+    "progress": 100,
+    "lead": "Marcus Chen",
+    "priority": "Low"
+  },
+  {
+    "id": "PRJ-155",
+    "name": "Sales Pitch Deck Generator",
+    "description": "Customer acquisition, sales acceleration platforms, and business operations pipelines. Focus Area #4.",
+    "businessUnit": "Commercial",
+    "status": "Completed",
+    "region": "Asia-Pacific",
+    "quarter": "Q3",
+    "projectType": "Consulting",
+    "monthCreated": "Jun",
+    "budget": 816630,
+    "progress": 100,
+    "lead": "Liam O'Connor",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-156",
+    "name": "Contract Lifecycle Management",
+    "description": "Customer acquisition, sales acceleration platforms, and business operations pipelines. Focus Area #1.",
+    "businessUnit": "Commercial",
+    "status": "Completed",
+    "region": "Latin America",
+    "quarter": "Q2",
+    "projectType": "Research",
+    "monthCreated": "Jun",
+    "budget": 828975,
+    "progress": 100,
+    "lead": "Yuki Tanaka",
+    "priority": "Medium"
+  },
+  {
+    "id": "PRJ-157",
+    "name": "Wholesale Price Matrix Hub",
+    "description": "Customer acquisition, sales acceleration platforms, and business operations pipelines. Focus Area #3.",
+    "businessUnit": "Commercial",
+    "status": "Completed",
+    "region": "North America",
+    "quarter": "Q1",
+    "projectType": "Software",
+    "monthCreated": "Jun",
+    "budget": 841320,
+    "progress": 100,
+    "lead": "Elena Rostova",
+    "priority": "Low"
+  },
+  {
+    "id": "PRJ-158",
+    "name": "Loyalty Campaign Orchestrator",
+    "description": "Customer acquisition, sales acceleration platforms, and business operations pipelines. Focus Area #5.",
+    "businessUnit": "Commercial",
+    "status": "Completed",
+    "region": "Europe",
+    "quarter": "Q4",
+    "projectType": "Operations",
+    "monthCreated": "Jun",
+    "budget": 853665,
+    "progress": 100,
+    "lead": "Zoe Kaufmann",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-159",
+    "name": "Dealer Network Hub",
+    "description": "Customer acquisition, sales acceleration platforms, and business operations pipelines. Focus Area #2.",
+    "businessUnit": "Commercial",
+    "status": "Completed",
+    "region": "Asia-Pacific",
+    "quarter": "Q3",
+    "projectType": "Consulting",
+    "monthCreated": "Jun",
+    "budget": 866010,
+    "progress": 100,
+    "lead": "Oliver Bennett",
+    "priority": "Medium"
+  },
+  {
+    "id": "PRJ-160",
+    "name": "Revenue Operations Desk",
+    "description": "Customer acquisition, sales acceleration platforms, and business operations pipelines. Focus Area #4.",
+    "businessUnit": "Commercial",
+    "status": "Completed",
+    "region": "Latin America",
+    "quarter": "Q2",
+    "projectType": "Research",
+    "monthCreated": "Jun",
+    "budget": 878355,
+    "progress": 100,
+    "lead": "David Vance",
+    "priority": "Low"
+  },
+  {
+    "id": "PRJ-161",
+    "name": "Enterprise CRM Sync",
+    "description": "Customer acquisition, sales acceleration platforms, and business operations pipelines. Focus Area #1.",
+    "businessUnit": "Commercial",
+    "status": "Completed",
+    "region": "North America",
+    "quarter": "Q1",
+    "projectType": "Software",
+    "monthCreated": "Jun",
+    "budget": 890700,
+    "progress": 100,
+    "lead": "Sarah Jenkins",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-162",
+    "name": "Global Distributor Portal",
+    "description": "Customer acquisition, sales acceleration platforms, and business operations pipelines. Focus Area #3.",
+    "businessUnit": "Commercial",
+    "status": "Completed",
+    "region": "Europe",
+    "quarter": "Q4",
+    "projectType": "Operations",
+    "monthCreated": "Jun",
+    "budget": 903045,
+    "progress": 100,
+    "lead": "Sofia Rodriguez",
+    "priority": "Medium"
+  },
+  {
+    "id": "PRJ-163",
+    "name": "B2B Procurement Gateway",
+    "description": "Customer acquisition, sales acceleration platforms, and business operations pipelines. Focus Area #5.",
+    "businessUnit": "Commercial",
+    "status": "Completed",
+    "region": "Asia-Pacific",
+    "quarter": "Q3",
+    "projectType": "Consulting",
+    "monthCreated": "Jun",
+    "budget": 915390,
+    "progress": 100,
+    "lead": "Amara Diallo",
+    "priority": "Low"
+  },
+  {
+    "id": "PRJ-164",
+    "name": "E-commerce Hyper-Personalizer",
+    "description": "Customer acquisition, sales acceleration platforms, and business operations pipelines. Focus Area #2.",
+    "businessUnit": "Commercial",
+    "status": "Completed",
+    "region": "Latin America",
+    "quarter": "Q2",
+    "projectType": "Research",
+    "monthCreated": "Jun",
+    "budget": 927735,
+    "progress": 100,
+    "lead": "Marcus Chen",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-165",
+    "name": "Data Lakehouse Migration",
+    "description": "Infrastructure, dev platforms, API consolidation, and core cloud migrations. Focus Area #4.",
+    "businessUnit": "Technology",
+    "status": "Completed",
+    "region": "North America",
+    "quarter": "Q1",
+    "projectType": "Software",
+    "monthCreated": "Jun",
+    "budget": 940080,
+    "progress": 100,
+    "lead": "Liam O'Connor",
+    "priority": "Medium"
+  },
+  {
+    "id": "PRJ-166",
+    "name": "Enterprise Search Engine",
+    "description": "Infrastructure, dev platforms, API consolidation, and core cloud migrations. Focus Area #1.",
+    "businessUnit": "Technology",
+    "status": "Completed",
+    "region": "Europe",
+    "quarter": "Q4",
+    "projectType": "Operations",
+    "monthCreated": "Jun",
+    "budget": 952425,
+    "progress": 100,
+    "lead": "Yuki Tanaka",
+    "priority": "Low"
+  },
+  {
+    "id": "PRJ-167",
+    "name": "Cloud Migration Wave 3",
+    "description": "Infrastructure, dev platforms, API consolidation, and core cloud migrations. Focus Area #3.",
+    "businessUnit": "Technology",
+    "status": "Completed",
+    "region": "Asia-Pacific",
+    "quarter": "Q3",
+    "projectType": "Consulting",
+    "monthCreated": "Jun",
+    "budget": 964770,
+    "progress": 100,
+    "lead": "Elena Rostova",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-168",
+    "name": "Edge Computing Daemon",
+    "description": "Infrastructure, dev platforms, API consolidation, and core cloud migrations. Focus Area #5.",
+    "businessUnit": "Technology",
+    "status": "Completed",
+    "region": "Latin America",
+    "quarter": "Q2",
+    "projectType": "Research",
+    "monthCreated": "Jun",
+    "budget": 977115,
+    "progress": 100,
+    "lead": "Zoe Kaufmann",
+    "priority": "Medium"
+  },
+  {
+    "id": "PRJ-169",
+    "name": "Microservices Mesh Layer",
+    "description": "Infrastructure, dev platforms, API consolidation, and core cloud migrations. Focus Area #2.",
+    "businessUnit": "Technology",
+    "status": "Completed",
+    "region": "North America",
+    "quarter": "Q1",
+    "projectType": "Software",
+    "monthCreated": "Jun",
+    "budget": 989460,
+    "progress": 100,
+    "lead": "Oliver Bennett",
+    "priority": "Low"
+  },
+  {
+    "id": "PRJ-170",
+    "name": "Zero-Trust Access Gateway",
+    "description": "Infrastructure, dev platforms, API consolidation, and core cloud migrations. Focus Area #4.",
+    "businessUnit": "Technology",
+    "status": "Completed",
+    "region": "Europe",
+    "quarter": "Q4",
+    "projectType": "Operations",
+    "monthCreated": "Prior",
+    "budget": 1001805,
+    "progress": 100,
+    "lead": "David Vance",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-171",
+    "name": "Database Modernization Grid",
+    "description": "Infrastructure, dev platforms, API consolidation, and core cloud migrations. Focus Area #1.",
+    "businessUnit": "Technology",
+    "status": "Completed",
+    "region": "Asia-Pacific",
+    "quarter": "Q3",
+    "projectType": "Consulting",
+    "monthCreated": "Prior",
+    "budget": 1014150,
+    "progress": 100,
+    "lead": "Sarah Jenkins",
+    "priority": "Medium"
+  },
+  {
+    "id": "PRJ-172",
+    "name": "Federated Identity System",
+    "description": "Infrastructure, dev platforms, API consolidation, and core cloud migrations. Focus Area #3.",
+    "businessUnit": "Technology",
+    "status": "Completed",
+    "region": "Latin America",
+    "quarter": "Q2",
+    "projectType": "Research",
+    "monthCreated": "Prior",
+    "budget": 1026495,
+    "progress": 100,
+    "lead": "Sofia Rodriguez",
+    "priority": "Low"
+  },
+  {
+    "id": "PRJ-173",
+    "name": "Legacy Mainframe API Wrapper",
+    "description": "Infrastructure, dev platforms, API consolidation, and core cloud migrations. Focus Area #5.",
+    "businessUnit": "Technology",
+    "status": "Completed",
+    "region": "North America",
+    "quarter": "Q1",
+    "projectType": "Software",
+    "monthCreated": "Prior",
+    "budget": 1038840,
+    "progress": 100,
+    "lead": "Amara Diallo",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-174",
+    "name": "High-throughput Event Broker",
+    "description": "Infrastructure, dev platforms, API consolidation, and core cloud migrations. Focus Area #2.",
+    "businessUnit": "Technology",
+    "status": "Completed",
+    "region": "Europe",
+    "quarter": "Q4",
+    "projectType": "Operations",
+    "monthCreated": "Prior",
+    "budget": 1051185,
+    "progress": 100,
+    "lead": "Marcus Chen",
+    "priority": "Medium"
+  },
+  {
+    "id": "PRJ-175",
+    "name": "Automated DevOps Pipeline",
+    "description": "Infrastructure, dev platforms, API consolidation, and core cloud migrations. Focus Area #4.",
+    "businessUnit": "Technology",
+    "status": "Delayed",
+    "region": "Asia-Pacific",
+    "quarter": "Q3",
+    "projectType": "Consulting",
+    "monthCreated": "Prior",
+    "budget": 1063530,
+    "progress": 27,
+    "lead": "Liam O'Connor",
+    "priority": "Low"
+  },
+  {
+    "id": "PRJ-176",
+    "name": "Distributed Storage Cluster",
+    "description": "Infrastructure, dev platforms, API consolidation, and core cloud migrations. Focus Area #1.",
+    "businessUnit": "Technology",
+    "status": "Delayed",
+    "region": "Latin America",
+    "quarter": "Q2",
+    "projectType": "Research",
+    "monthCreated": "Prior",
+    "budget": 1075875,
+    "progress": 40,
+    "lead": "Yuki Tanaka",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-177",
+    "name": "Container Orchestration Hub",
+    "description": "Infrastructure, dev platforms, API consolidation, and core cloud migrations. Focus Area #3.",
+    "businessUnit": "Technology",
+    "status": "Delayed",
+    "region": "North America",
+    "quarter": "Q1",
+    "projectType": "Software",
+    "monthCreated": "Prior",
+    "budget": 1088220,
+    "progress": 53,
+    "lead": "Elena Rostova",
+    "priority": "Medium"
+  },
+  {
+    "id": "PRJ-178",
+    "name": "Core Network Fiber Upgrade",
+    "description": "Infrastructure, dev platforms, API consolidation, and core cloud migrations. Focus Area #5.",
+    "businessUnit": "Technology",
+    "status": "Delayed",
+    "region": "Europe",
+    "quarter": "Q4",
+    "projectType": "Operations",
+    "monthCreated": "Prior",
+    "budget": 1100565,
+    "progress": 21,
+    "lead": "Zoe Kaufmann",
+    "priority": "Low"
+  },
+  {
+    "id": "PRJ-179",
+    "name": "Secure Sandbox virtualization",
+    "description": "Infrastructure, dev platforms, API consolidation, and core cloud migrations. Focus Area #2.",
+    "businessUnit": "Technology",
+    "status": "Delayed",
+    "region": "Asia-Pacific",
+    "quarter": "Q3",
+    "projectType": "Consulting",
+    "monthCreated": "Prior",
+    "budget": 1112910,
+    "progress": 34,
+    "lead": "Oliver Bennett",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-180",
+    "name": "Mobile App Redesign",
+    "description": "Infrastructure, dev platforms, API consolidation, and core cloud migrations. Focus Area #4.",
+    "businessUnit": "Technology",
+    "status": "Delayed",
+    "region": "Latin America",
+    "quarter": "Q2",
+    "projectType": "Research",
+    "monthCreated": "Prior",
+    "budget": 1125255,
+    "progress": 47,
+    "lead": "David Vance",
+    "priority": "Medium"
+  },
+  {
+    "id": "PRJ-181",
+    "name": "Disaster Recovery Warm-Site",
+    "description": "Infrastructure, dev platforms, API consolidation, and core cloud migrations. Focus Area #1.",
+    "businessUnit": "Technology",
+    "status": "Delayed",
+    "region": "North America",
+    "quarter": "Q1",
+    "projectType": "Software",
+    "monthCreated": "Prior",
+    "budget": 1137600,
+    "progress": 15,
+    "lead": "Sarah Jenkins",
+    "priority": "Low"
+  },
+  {
+    "id": "PRJ-182",
+    "name": "IoT Sensor Mesh Middleware",
+    "description": "Infrastructure, dev platforms, API consolidation, and core cloud migrations. Focus Area #3.",
+    "businessUnit": "Technology",
+    "status": "Delayed",
+    "region": "Europe",
+    "quarter": "Q4",
+    "projectType": "Operations",
+    "monthCreated": "Prior",
+    "budget": 1149945,
+    "progress": 28,
+    "lead": "Sofia Rodriguez",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-183",
+    "name": "Intranet Knowledge Graph",
+    "description": "Infrastructure, dev platforms, API consolidation, and core cloud migrations. Focus Area #5.",
+    "businessUnit": "Technology",
+    "status": "Delayed",
+    "region": "Asia-Pacific",
+    "quarter": "Q3",
+    "projectType": "Consulting",
+    "monthCreated": "Prior",
+    "budget": 1162290,
+    "progress": 41,
+    "lead": "Amara Diallo",
+    "priority": "Medium"
+  },
+  {
+    "id": "PRJ-184",
+    "name": "Developer Portal Platform",
+    "description": "Infrastructure, dev platforms, API consolidation, and core cloud migrations. Focus Area #2.",
+    "businessUnit": "Technology",
+    "status": "Delayed",
+    "region": "Latin America",
+    "quarter": "Q2",
+    "projectType": "Research",
+    "monthCreated": "Prior",
+    "budget": 1174635,
+    "progress": 54,
+    "lead": "Marcus Chen",
+    "priority": "Low"
+  },
+  {
+    "id": "PRJ-185",
+    "name": "Unified Logging Collector",
+    "description": "Infrastructure, dev platforms, API consolidation, and core cloud migrations. Focus Area #4.",
+    "businessUnit": "Technology",
+    "status": "Delayed",
+    "region": "North America",
+    "quarter": "Q1",
+    "projectType": "Software",
+    "monthCreated": "Prior",
+    "budget": 1186980,
+    "progress": 22,
+    "lead": "Liam O'Connor",
+    "priority": "High"
+  },
+  {
+    "id": "PRJ-186",
+    "name": "Automated QA Testing Suite",
+    "description": "Infrastructure, dev platforms, API consolidation, and core cloud migrations. Focus Area #1.",
+    "businessUnit": "Technology",
+    "status": "Delayed",
+    "region": "Europe",
+    "quarter": "Q4",
+    "projectType": "Operations",
+    "monthCreated": "Prior",
+    "budget": 1199325,
+    "progress": 35,
+    "lead": "Yuki Tanaka",
+    "priority": "Medium"
+  }
+],
+
+        // Static data references
+        growth: [
+          { year: '2021', projects: 15, rate: 'Baseline', peak: 'Q3', milestone: 'Team Established' },
+          { year: '2022', projects: 25, rate: '+66.7%', peak: 'Q4', milestone: 'Dashboard Suite Launch' },
+          { year: '2023', projects: 40, rate: '+60.0%', peak: 'Q2', milestone: 'Video & Animation Wing' },
+          { year: '2024', projects: 50, rate: '+25.0%', peak: 'Q3', milestone: 'Enterprise Scale Adoption' }
+        ],
+
+        workflow: [
+          { step: '01', title: 'Business Request Received', desc: 'Intake ticketing initiates with structured metadata tracking and scoping templates.', time: 'Day 1', lead: 'Business Unit Lead' },
+          { step: '02', title: 'Content & Data Reviewed', desc: 'Rigorous cleansing and verification of raw metrics, assets, and source datasets.', time: 'Day 2', lead: 'Data Analyst' },
+          { step: '03', title: 'Storyline & Structure Developed', desc: 'Drafting core narrative arcs, wireframes, and sequence plans prior to full graphic treatment.', time: 'Day 3', lead: 'Creative Director' },
+          { step: '04', title: 'Draft Design Created', desc: 'Production-ready pixel construction using unified design tokens, typography, and palettes.', time: 'Day 4 - 5', lead: 'UI Designer' },
+          { step: '05', title: 'Feedback & Refinement', desc: 'Collaborative loop with active stakeholders incorporating real-time layout reviews.', time: 'Day 6', lead: 'CIV Team & Client' },
+          { step: '06', title: 'Final Delivery & Rollout', desc: 'Deploying high-fidelity interactive templates, static publications, or animated code packages.', time: 'Day 7', lead: 'Operations Center' }
+        ],
+
+        // Initialize App
+        init() {
+          // Slide autoplay handler setup
+          this.$watch('autoplayActive', value => {
+            if (value) {
+              this.autoplayTimer = setInterval(() => {
+                this.slide = (this.slide + 1) % 4;
+              }, 5000);
+            } else {
+              clearInterval(this.autoplayTimer);
+              this.autoplayTimer = null;
+            }
+          });
+        },
+
+        // Filter projects
+        filteredProjects() {
+          return this.projects.filter(p => {
+            if (this.region && p.region !== this.region) return false;
+            if (this.bu && p.businessUnit !== this.bu) return false;
+            if (this.quarter && p.quarter !== this.quarter) return false;
+            if (this.type && p.projectType !== this.type) return false;
+            if (this.search) {
+              const q = this.search.toLowerCase();
+              const matchesName = p.name.toLowerCase().includes(q);
+              const matchesLead = p.lead.toLowerCase().includes(q);
+              const matchesId = p.id.toLowerCase().includes(q);
+              if (!matchesName && !matchesLead && !matchesId) return false;
+            }
+            return true;
+          });
+        },
+
+        // Pagination calculations
+        totalPages() {
+          return Math.ceil(this.filteredProjects().length / this.itemsPerPage) || 1;
+        },
+
+        paginatedProjects() {
+          const start = (this.page - 1) * this.itemsPerPage;
+          return this.filteredProjects().slice(start, start + this.itemsPerPage);
+        },
+
+        // Calculations for KPI Cards
+        kpis() {
+          const list = this.filteredProjects();
+          return {
+            totalBudget: list.reduce((sum, p) => sum + p.budget, 0),
+            active: list.filter(p => p.status === 'Active').length,
+            completed: list.filter(p => p.status === 'Completed').length,
+            delayed: list.filter(p => p.status === 'Delayed').length
+          }
+        },
+
+        // Calculations for Charts
+        chartMonthlyData() {
+          const list = this.filteredProjects();
+          const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+          return months.map(m => {
+            return {
+              month: m,
+              count: list.filter(p => p.monthCreated === m).length
+            };
+          });
+        },
+
+        maxMonthlyCount() {
+          const data = this.chartMonthlyData();
+          return Math.max(1, ...data.map(d => d.count));
+        },
+
+        chartBUData() {
+          const list = this.filteredProjects();
+          const total = list.length || 1;
+          const bus = ['Research', 'Analytics', 'Risk', 'Commercial', 'Technology'];
+          return bus.map(name => {
+            const count = list.filter(p => p.businessUnit === name).length;
+            return {
+              name,
+              count,
+              percent: (count / total) * 100
+            };
+          });
+        },
+
+        // General functions
+        resetFilters() {
+          this.search = '';
+          this.region = '';
+          this.bu = '';
+          this.quarter = '';
+          this.type = '';
+          this.page = 1;
+        },
+
+        selectProject(p) {
+          this.selectedProject = p;
+          this.drawerOpen = true;
+          this.$nextTick(() => lucide.createIcons());
+        },
+
+        formatCurrency(num) {
+          return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            maximumFractionDigits: 0
+          }).format(num);
+        },
+
+        // Autoplay presentation
+        toggleAutoplay() {
+          this.autoplayActive = !this.autoplayActive;
+        },
+
+        toggleFullscreen() {
+          this.fullscreenActive = !this.fullscreenActive;
+        },
+
+        // Simulate random intake project additions
+        simulateIntake() {
+          const bus = ['Research', 'Analytics', 'Risk', 'Commercial', 'Technology'];
+          const regionsList = ['North America', 'Europe', 'Asia-Pacific', 'Latin America'];
+          const quartersList = ['Q1', 'Q2', 'Q3', 'Q4'];
+          const typesList = ['Software', 'Research', 'Consulting', 'Operations'];
+          const monthsList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+          const leadsList = ['Yasmine Al-Fayed', 'Gregory House', 'Christian Lindner', 'Linus Torvalds', 'Grace Hopper'];
+
+          const randomBU = bus[Math.floor(Math.random() * bus.length)];
+          const randomRegion = regionsList[Math.floor(Math.random() * regionsList.length)];
+          const randomQuarter = quartersList[Math.floor(Math.random() * quartersList.length)];
+          const randomType = typesList[Math.floor(Math.random() * typesList.length)];
+          const randomMonth = monthsList[Math.floor(Math.random() * monthsList.length)];
+          const randomLead = leadsList[Math.floor(Math.random() * leadsList.length)];
+
+          const nextIdNum = 101 + this.projects.length;
+
+          const p = {
+            id: 'PRJ-' + nextIdNum,
+            name: 'Simulated: ' + randomBU + ' Core ' + nextIdNum,
+            description: 'Auto-generated intake simulation to test live chart calculations in selected quarters.',
+            businessUnit: randomBU,
+            status: 'Active',
+            region: randomRegion,
+            quarter: randomQuarter,
+            projectType: randomType,
+            monthCreated: randomMonth,
+            budget: 250000 + Math.floor(Math.random() * 750000),
+            progress: 10 + Math.floor(Math.random() * 40),
+            lead: randomLead,
+            priority: Math.random() > 0.5 ? 'High' : 'Medium'
+          };
+
+          this.projects.unshift(p);
+          this.page = 1;
+        },
+
+        // Export current filtered list as CSV
+        exportCSV() {
+          const list = this.filteredProjects();
+          const headers = 'ID,Project Name,Business Unit,Status,Region,Quarter,Type,Budget,Progress,Lead\n';
+          const rows = list.map(p => {
+            return '"' + p.id + '","' + p.name + '","' + p.businessUnit + '","' + p.status + '","' + p.region + '","' + p.quarter + '","' + p.projectType + '",' + p.budget + ',' + p.progress + ',"' + p.lead + '"';
+          }).join('\n');
+          
+          const csvContent = 'data:text/csv;charset=utf-8,' + encodeURIComponent(headers + rows);
+          const link = document.createElement('a');
+          link.setAttribute('href', csvContent);
+          link.setAttribute('download', 'Project_Performance_Report_' + new Date().toISOString().slice(0,10) + '.csv');
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      };
+    }
+  </script>
+</body>
+</html>

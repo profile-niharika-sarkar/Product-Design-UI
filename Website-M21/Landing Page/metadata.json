@@ -1,0 +1,6 @@
+{
+  "name": "Outdoor Media & Marketing Split Slider",
+  "description": "An interactive split-slider landing page for Outdoor Media & Marketing with asset mockups, budgets, and AI campaign generator.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

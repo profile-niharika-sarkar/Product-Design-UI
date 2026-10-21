@@ -1,0 +1,6 @@
+{
+  "name": "Columbus - Executive AI Assistant",
+  "description": "Premium enterprise AI voice assistant interface for The Bradbury Group.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

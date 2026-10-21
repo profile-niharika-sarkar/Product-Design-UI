@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HireAI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Design Tokens ──────────────────────────────────────────────── */
+    :root {
+      --navy:        #1E2A5E;
+      --void:        #07080F;
+      --deep:        #111425;
+      --ash:         #F0F1F5;
+      --muted:       #6B7099;
+      --glass:       rgba(255,255,255,0.07);
+      --accent:      #4F6EFF;
+      --gold:        #FFB547;
+
+      --radius-sm:   6px;
+      --radius-md:   10px;
+      --radius-lg:   16px;
+
+      --font-display: 'Montserrat', sans-serif;
+      --font-body:    Verdana, Geneva, sans-serif;
+
+      --transition:  0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ─── Reset ──────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--void);
+      color: var(--ash);
+      font-family: var(--font-body);
+      font-size: 14px;
+      line-height: 1.7;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+    button { cursor: pointer; border: none; background: none; font: inherit; }
+
+    /* ─── Scrollbar ──────────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--deep); }
+    ::-webkit-scrollbar-thumb { background: var(--navy); border-radius: 99px; }
+
+    /* ─── Utility ────────────────────────────────────────────────────── */
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ─── Buttons ────────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: var(--radius-md);
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+    .btn-ghost {
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid transparent;
+    }
+    .btn-ghost:hover {
+      color: var(--ash);
+      background: var(--glass);
+      border-color: rgba(255,255,255,0.1);
+    }
+    .btn-primary {
+      color: #fff;
+      background: var(--accent);
+      box-shadow: 0 0 24px rgba(79,110,255,0.35);
+    }
+    .btn-primary:hover {
+      background: #3a57f5;
+      box-shadow: 0 0 32px rgba(79,110,255,0.55);
+      transform: translateY(-1px);
+    }
+
+    /* ─── Header ─────────────────────────────────────────────────────── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(7, 8, 15, 0.82);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      animation: slideDown 0.5s cubic-bezier(0.4,0,0.2,1) both;
+    }
+    @keyframes slideDown {
+      from { transform: translateY(-100%); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+    }
+
+    /* Logo */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .logo-icon {
+      width: 38px;
+      height: 38px;
+      background: var(--accent);
+      border-radius: var(--radius-sm);
+      display: grid;
+      place-items: center;
+      transition: var(--transition);
+      box-shadow: 0 0 16px rgba(79,110,255,0.4);
+    }
+    .logo:hover .logo-icon {
+      transform: rotate(360deg);
+      box-shadow: 0 0 24px rgba(79,110,255,0.65);
+    }
+    .logo-icon svg {
+      width: 20px; height: 20px;
+      stroke: #fff;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .logo-text {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--ash);
+      letter-spacing: -0.02em;
+    }
+
+    /* Desktop nav */
+    .nav-desktop {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .nav-link {
+      padding: 7px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+      transition: var(--transition);
+      position: relative;
+    }
+    .nav-link:hover {
+      color: var(--ash);
+      background: var(--glass);
+    }
+    .nav-link.active {
+      color: var(--accent);
+      background: rgba(79,110,255,0.10);
+    }
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 14px;
+      right: 14px;
+      height: 2px;
+      background: var(--accent);
+      border-radius: 99px;
+    }
+
+    /* CTA group */
+    .header-cta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      width: 38px;
+      height: 38px;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      background: var(--glass);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--ash);
+      transition: var(--transition);
+    }
+    .hamburger:hover { background: rgba(255,255,255,0.12); }
+    .hamburger svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2; stroke-linecap: round; fill: none; }
+
+    /* Mobile menu */
+    .mobile-menu {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1),
+                  opacity 0.3s ease;
+      opacity: 0;
+    }
+    .mobile-menu.open {
+      max-height: 400px;
+      opacity: 1;
+    }
+    .mobile-menu-inner {
+      border-top: 1px solid rgba(255,255,255,0.07);
+      padding: 16px 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .mobile-nav-link {
+      display: block;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+      transition: var(--transition);
+    }
+    .mobile-nav-link:hover, .mobile-nav-link.active {
+      color: var(--ash);
+      background: var(--glass);
+    }
+    .mobile-nav-link.active { color: var(--accent); }
+    .mobile-cta {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+    .mobile-cta .btn { justify-content: center; width: 100%; }
+
+    /* ─── Main / Demo Content ────────────────────────────────────────── */
+    main { flex: 1; }
+
+    /* Hero (placeholder page content) */
+    .hero {
+      padding: 100px 0 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    /* Ambient glow blobs */
+    .hero::before, .hero::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero::before {
+      width: 560px; height: 400px;
+      top: -80px; left: -100px;
+      background: rgba(30, 42, 94, 0.55);
+    }
+    .hero::after {
+      width: 480px; height: 380px;
+      bottom: -60px; right: -80px;
+      background: rgba(79, 110, 255, 0.18);
+    }
+    .hero > * { position: relative; z-index: 1; }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px 6px 8px;
+      border-radius: 99px;
+      background: var(--glass);
+      border: 1px solid rgba(255,255,255,0.1);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      margin-bottom: 28px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      animation: fadeUp 0.6s 0.1s both;
+    }
+    .hero-badge span.dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 8px var(--gold);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.4 } }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(40px, 6vw, 76px);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      color: var(--ash);
+      margin-bottom: 22px;
+      animation: fadeUp 0.6s 0.2s both;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+    .hero h1 strong {
+      font-style: normal;
+      color: var(--gold);
+    }
+    .hero p {
+      max-width: 560px;
+      margin: 0 auto 40px;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.65;
+      font-weight: 300;
+      animation: fadeUp 0.6s 0.3s both;
+    }
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      animation: fadeUp 0.6s 0.4s both;
+    }
+    .btn-gold {
+      color: var(--void);
+      background: var(--gold);
+      box-shadow: 0 0 24px rgba(255,181,71,0.3);
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+    .btn-gold:hover {
+      background: #ffc46a;
+      transform: translateY(-1px);
+      box-shadow: 0 0 36px rgba(255,181,71,0.5);
+    }
+    .btn-outline {
+      color: var(--ash);
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.15);
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+    .btn-outline:hover {
+      background: var(--glass);
+      border-color: rgba(255,255,255,0.28);
+    }
+
+    /* Stats row */
+    .stats {
+      margin-top: 72px;
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      flex-wrap: wrap;
+      animation: fadeUp 0.6s 0.5s both;
+    }
+    .stat-item {
+      padding: 24px 48px;
+      text-align: center;
+      border-right: 1px solid rgba(255,255,255,0.07);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: 34px;
+      font-weight: 800;
+      color: var(--ash);
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-number span { color: var(--accent); }
+    .stat-number.gold span { color: var(--gold); }
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 500;
+    }
+
+    /* Cards preview section */
+    .section {
+      padding: 80px 0;
+    }
+    .section-label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.1;
+      color: var(--ash);
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 480px;
+      font-weight: 300;
+      margin-bottom: 48px;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: var(--deep);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at top left, rgba(79,110,255,0.07) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .card:hover {
+      border-color: rgba(79,110,255,0.35);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .card-tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(79,110,255,0.12);
+      color: var(--accent);
+      margin-bottom: 16px;
+      letter-spacing: 0.04em;
+    }
+    .card-tag.gold {
+      background: rgba(255,181,71,0.12);
+      color: var(--gold);
+    }
+    .card h3 {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ash);
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+    .card p { font-size: 14px; color: var(--muted); line-height: 1.55; }
+    .card-meta {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+    .card-salary {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ash);
+    }
+    .card-location {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── Footer ─────────────────────────────────────────────────────── */
+    footer {
+      background: var(--deep);
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr 1fr;
+      gap: 48px;
+      padding: 60px 0 48px;
+    }
+    .footer-brand p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-top: 16px;
+      font-weight: 300;
+    }
+    .footer-col h3 {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--ash);
+      margin-bottom: 20px;
+    }
+    .footer-col ul {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .footer-col a {
+      font-size: 14px;
+      color: var(--muted);
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .footer-col a:hover { color: var(--ash); }
+    .footer-col a:hover::before {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.07);
+      padding: 20px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-bottom p {
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .footer-bottom .accent-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: inline-block;
+      margin-right: 8px;
+      box-shadow: 0 0 8px var(--accent);
+    }
+    .social-links {
+      display: flex;
+      gap: 10px;
+    }
+    .social-link {
+      width: 34px; height: 34px;
+      border-radius: var(--radius-sm);
+      background: var(--glass);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: 14px;
+      transition: var(--transition);
+    }
+    .social-link:hover {
+      background: rgba(79,110,255,0.15);
+      border-color: rgba(79,110,255,0.35);
+      color: var(--accent);
+    }
+
+    /* ─── Responsive ─────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .nav-desktop, .header-cta { display: none; }
+      .hamburger { display: flex; }
+
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 36px;
+        padding: 48px 0 36px;
+      }
+      .footer-brand { grid-column: 1 / -1; }
+
+      .stat-item { padding: 16px 24px; }
+
+      .hero { padding: 72px 0 60px; }
+    }
+    @media (max-width: 480px) {
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-brand { grid-column: auto; }
+      .hero-actions { flex-direction: column; align-items: stretch; }
+      .hero-actions .btn { justify-content: center; }
+      .stats { flex-direction: column; align-items: center; }
+      .stat-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.07); width: 100%; }
+      .stat-item:last-child { border-bottom: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── Header ───────────────────────────────────────────────────── -->
+  <header>
+    <div class="container">
+      <div class="header-inner">
+
+        <!-- Logo -->
+        <a href="/" class="logo">
+          <div class="logo-icon">
+            <!-- Brain SVG icon -->
+            <svg viewBox="0 0 24 24"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24A2.5 2.5 0 0 1 9.5 2"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24A2.5 2.5 0 0 0 14.5 2"/></svg>
+          </div>
+          <span class="logo-text">HireAI</span>
+        </a>
+
+        <!-- Desktop Nav -->
+        <nav class="nav-desktop">
+          <a href="/jobs" class="nav-link active">Find Jobs</a>
+          <a href="/employers" class="nav-link">For Employers</a>
+          <a href="/candidates" class="nav-link">For Candidates</a>
+        </nav>
+
+        <!-- CTA buttons -->
+        <div class="header-cta">
+          <button class="btn btn-ghost">Sign In</button>
+          <button class="btn btn-primary">Get Started</button>
+        </div>
+
+        <!-- Hamburger -->
+        <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+          <svg id="iconMenu" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          <svg id="iconClose" viewBox="0 0 24 24" style="display:none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <!-- Mobile Nav -->
+      <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-inner">
+          <a href="/jobs" class="mobile-nav-link active">Find Jobs</a>
+          <a href="/employers" class="mobile-nav-link">For Employers</a>
+          <a href="/candidates" class="mobile-nav-link">For Candidates</a>
+          <div class="mobile-cta">
+            <button class="btn btn-ghost">Sign In</button>
+            <button class="btn btn-primary">Get Started</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ─── Main ─────────────────────────────────────────────────────── -->
+  <main>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-badge">
+          <span class="dot"></span>
+          Now with AI-powered matching
+        </div>
+
+        <h1>
+          Find Your Next <em>Dream</em><br/>
+          Role With <strong>AI</strong>
+        </h1>
+
+        <p>
+          HireAI connects ambitious professionals with industry-leading companies
+          using intelligent matching that actually understands your career goals.
+        </p>
+
+        <div class="hero-actions">
+          <button class="btn btn-primary">Browse Open Roles</button>
+          <button class="btn btn-gold">Post a Job — Free</button>
+          <button class="btn btn-outline">Watch Demo</button>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats">
+          <div class="stat-item">
+            <div class="stat-number"><span>48</span>k+</div>
+            <div class="stat-label">Active Jobs</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number gold"><span>12</span>k+</div>
+            <div class="stat-label">Companies</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number"><span>2.4</span>M</div>
+            <div class="stat-label">Candidates</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number gold"><span>94</span>%</div>
+            <div class="stat-label">Match Rate</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Jobs -->
+    <section class="section" style="background: rgba(17,20,37,0.6);">
+      <div class="container">
+        <span class="section-label">Featured Roles</span>
+        <h2 class="section-title">Opportunities Matched<br/>For You</h2>
+        <p class="section-sub">Hand-picked positions from top companies actively hiring right now.</p>
+
+        <div class="cards-grid">
+          <div class="card">
+            <span class="card-tag">Engineering</span>
+            <h3>Senior Frontend Engineer</h3>
+            <p>Build next-gen user experiences with a world-class design system team.</p>
+            <div class="card-meta">
+              <span class="card-salary">$160k – $200k</span>
+              <span class="card-location">📍 Remote</span>
+            </div>
+          </div>
+          <div class="card">
+            <span class="card-tag gold">Design</span>
+            <h3>Product Design Lead</h3>
+            <p>Shape the visual direction of a fast-growing fintech platform.</p>
+            <div class="card-meta">
+              <span class="card-salary">$140k – $175k</span>
+              <span class="card-location">📍 New York</span>
+            </div>
+          </div>
+          <div class="card">
+            <span class="card-tag">AI / ML</span>
+            <h3>Machine Learning Engineer</h3>
+            <p>Work on LLM fine-tuning and inference infrastructure at scale.</p>
+            <div class="card-meta">
+              <span class="card-salary">$190k – $240k</span>
+              <span class="card-location">📍 San Francisco</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ─── Footer ───────────────────────────────────────────────────── -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+
+        <!-- Brand -->
+        <div class="footer-brand">
+          <a href="/" class="logo">
+            <div class="logo-icon">
+              <svg viewBox="0 0 24 24"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24A2.5 2.5 0 0 1 9.5 2"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24A2.5 2.5 0 0 0 14.5 2"/></svg>
+            </div>
+            <span class="logo-text">HireAI</span>
+          </a>
+          <p>AI-powered recruitment platform connecting<br/>top talent with leading companies worldwide.</p>
+        </div>
+
+        <!-- For Job Seekers -->
+        <div class="footer-col">
+          <h3>Job Seekers</h3>
+          <ul>
+            <li><a href="/jobs">Browse Jobs</a></li>
+            <li><a href="#">Career Resources</a></li>
+            <li><a href="#">Resume Builder</a></li>
+            <li><a href="#">Interview Prep</a></li>
+          </ul>
+        </div>
+
+        <!-- For Employers -->
+        <div class="footer-col">
+          <h3>Employers</h3>
+          <ul>
+            <li><a href="/employers">Post a Job</a></li>
+            <li><a href="#">Pricing</a></li>
+            <li><a href="#">Success Stories</a></li>
+            <li><a href="#">API Access</a></li>
+          </ul>
+        </div>
+
+        <!-- Company -->
+        <div class="footer-col">
+          <h3>Company</h3>
+          <ul>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Footer bottom -->
+      <div class="footer-bottom">
+        <p><span class="accent-dot"></span>&copy; 2026 HireAI. All rights reserved.</p>
+        <div class="social-links">
+          <!-- Twitter/X -->
+          <a href="#" class="social-link" aria-label="Twitter">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l16 16M4 20L20 4"/></svg>
+          </a>
+          <!-- LinkedIn -->
+          <a href="#" class="social-link" aria-label="LinkedIn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+          <!-- GitHub -->
+          <a href="#" class="social-link" aria-label="GitHub">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.2c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65S9 17.44 9 18v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu toggle
+    const btn = document.getElementById('hamburgerBtn');
+    const menu = document.getElementById('mobileMenu');
+    const iconMenu = document.getElementById('iconMenu');
+    const iconClose = document.getElementById('iconClose');
+
+    btn.addEventListener('click', () => {
+      const isOpen = menu.classList.toggle('open');
+      iconMenu.style.display  = isOpen ? 'none' : 'block';
+      iconClose.style.display = isOpen ? 'block' : 'none';
+    });
+
+    // Close mobile menu on link click
+    document.querySelectorAll('.mobile-nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        menu.classList.remove('open');
+        iconMenu.style.display = 'block';
+        iconClose.style.display = 'none';
+      });
+    });
+
+    // Active nav highlighting (demo)
+    document.querySelectorAll('.nav-link, .mobile-nav-link').forEach(link => {
+      link.addEventListener('click', function(e) {
+        const group = this.closest('nav, .mobile-menu-inner');
+        if (group) {
+          group.querySelectorAll('.nav-link, .mobile-nav-link').forEach(l => l.classList.remove('active'));
+          this.classList.add('active');
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

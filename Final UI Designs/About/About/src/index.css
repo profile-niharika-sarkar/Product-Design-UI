@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@theme {
+  --font-h1: "Inter", sans-serif;
+  --font-h2: "Montserrat", sans-serif;
+  --font-h3: "Montserrat", sans-serif;
+  --font-body: "Roboto", sans-serif;
+  --font-caption: "Open Sans", sans-serif;
+
+  --color-brand-navy: #0c2940;
+  --color-brand-navy-dark: #081d2e;
+  --color-brand-yellow: #f8c51c;
+}
+
+/* Custom Typography helpers */
+.font-h1 {
+  font-family: "Inter", sans-serif;
+}
+
+.font-h2 {
+  font-family: "Montserrat", sans-serif;
+}
+
+.font-h3 {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+}
+
+.font-body {
+  font-family: "Roboto", sans-serif;
+}
+
+.font-caption {
+  font-family: "Open Sans", sans-serif;
+  font-style: italic;
+}
+
+/* Infinite Marquee Slider Animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 25s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}

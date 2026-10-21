@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-pink: #FF4FD8;
+  --color-brand-magenta: #D946EF;
+  --color-brand-purple: #9333EA;
+  --color-brand-dark: #0A0A0A;
+  --color-brand-darker: #111111;
+
+  --font-montserrat: "Montserrat", sans-serif;
+
+  --background-image-gradient-brand: linear-gradient(135deg, #FF4FD8, #D946EF, #9333EA);
+
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-glow: pulseGlow 3s ease-in-out infinite;
+  --animate-gradient-shift: gradientShift 8s ease infinite;
+  --animate-marquee: marquee 25s linear infinite;
+  --animate-marquee-reverse: marquee 25s linear infinite reverse;
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+  }
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 20px rgba(255, 77, 216, 0.3); }
+    50% { box-shadow: 0 0 60px rgba(255, 77, 216, 0.7); }
+  }
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+}
+
+@layer base {
+  :root {
+    --brand-pink: #FF4FD8;
+    --brand-magenta: #D946EF;
+    --brand-purple: #9333EA;
+    --bg-dark: #0A0A0A;
+    --bg-darker: #111111;
+    --glow-pink: rgba(255, 77, 216, 0.35);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: #0A0A0A;
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  ::selection {
+    background: rgba(255, 77, 216, 0.3);
+    color: #fff;
+  }
+
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: #0A0A0A; }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #FF4FD8, #9333EA);
+    border-radius: 2px;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(135deg, #FF4FD8, #D946EF, #9333EA);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-animate {
+    background: linear-gradient(135deg, #FF4FD8, #D946EF, #9333EA, #FF4FD8);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 4s ease infinite;
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .glass-pink {
+    background: rgba(255, 77, 216, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 77, 216, 0.15);
+  }
+
+  .glow-pink { box-shadow: 0 0 30px rgba(255, 77, 216, 0.35); }
+  .glow-pink-strong { box-shadow: 0 0 60px rgba(255, 77, 216, 0.6); }
+
+  .clip-text { overflow: hidden; display: block; }
+
+  /* 3D Flip Card Utilities */
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+  .backface-hidden {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 30s linear infinite;
+  }
+
+  .marquee-track-reverse {
+    display: flex;
+    width: max-content;
+    animation: marquee 30s linear infinite reverse;
+  }
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}

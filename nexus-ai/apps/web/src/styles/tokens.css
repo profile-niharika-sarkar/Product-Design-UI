@@ -1,0 +1,86 @@
+/* Design tokens. Every color in the app comes from here. */
+:root {
+  color-scheme: light;
+  --bg: #f2f4f7;
+  --surface: #ffffff;
+  --sunk: #e8ecf1;
+  --ink: #152033;
+  --ink-2: #4a5669;
+  --ink-3: #6b7689;
+  --line: #d3dae3;
+  --focus: #2f5bea;
+  --btn: #152033;
+  --on-btn: #ffffff;
+
+  /* trust states: never use these for anything else */
+  --obs: #17698c;
+  --hyp: #6845b0;
+  --dec: #9a5300;
+  --done: #25744a;
+  --on-done: #ffffff;
+
+  /* severity and health */
+  --crit: #b3261e;
+  --crit-bg: #fbe9e7;
+  --high: #a34a00;
+  --med: #7a6400;
+  --low: #4a5669;
+  --ok: #25744a;
+
+  --sans: 'Schibsted Grotesk', 'Helvetica Neue', Arial, system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --sidebar: 232px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --bg: #0f1621;
+    --surface: #172130;
+    --sunk: #111a26;
+    --ink: #e5eaf1;
+    --ink-2: #aab5c6;
+    --ink-3: #8692a5;
+    --line: #2b3748;
+    --focus: #86a6ff;
+    --btn: #e5eaf1;
+    --on-btn: #0f1621;
+    --obs: #62b6da;
+    --hyp: #ae98ec;
+    --dec: #e5a24c;
+    --done: #58c287;
+    --on-done: #0f1621;
+    --crit: #ff8a7f;
+    --crit-bg: #3a1c1b;
+    --high: #f0a35e;
+    --med: #e0c45a;
+    --low: #aab5c6;
+    --ok: #58c287;
+  }
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0f1621;
+  --surface: #172130;
+  --sunk: #111a26;
+  --ink: #e5eaf1;
+  --ink-2: #aab5c6;
+  --ink-3: #8692a5;
+  --line: #2b3748;
+  --focus: #86a6ff;
+  --btn: #e5eaf1;
+  --on-btn: #0f1621;
+  --obs: #62b6da;
+  --hyp: #ae98ec;
+  --dec: #e5a24c;
+  --done: #58c287;
+  --on-done: #0f1621;
+  --crit: #ff8a7f;
+  --crit-bg: #3a1c1b;
+  --high: #f0a35e;
+  --med: #e0c45a;
+  --low: #aab5c6;
+  --ok: #58c287;
+}

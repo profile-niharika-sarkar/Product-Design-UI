@@ -1,0 +1,164 @@
+@import "tailwindcss";
+
+:root {
+  --tbg-navy: #0c2940;
+  --tbg-green: #3f6d67;
+  --tbg-teal: #39918d;
+  --tbg-copper: #c57b4b;
+  --tbg-gold: #f8c51c;
+  --tbg-white: #ffffff;
+  --surface: #ffffff;
+  --surface-secondary: #f8fafb;
+  --surface-hover: #eef8f7;
+  --border: #d7e3e7;
+  --text-primary: #0c2940;
+  --text-secondary: #51636f;
+  --success: #3f6d67;
+  --warning: #c57b4b;
+  --focus: #39918d;
+  --shadow-sm: 0 2px 8px rgba(12, 41, 64, 0.08);
+  --shadow-md: 0 8px 24px rgba(12, 41, 64, 0.12);
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+}
+
+/* Accessible Focus Ring */
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* Reduced Motion Support for Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@layer utilities {
+  .font-inter {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+  .font-montserrat {
+    font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
+  }
+  .font-roboto {
+    font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+  }
+  .font-caption {
+    font-family: 'Open Sans', system-ui, -apple-system, sans-serif;
+    font-style: italic;
+  }
+
+  /* Fluid typography clamps */
+  .text-clamp-title {
+    font-size: clamp(1.25rem, 3.5vw, 1.75rem);
+  }
+  .text-clamp-subtitle {
+    font-size: clamp(0.875rem, 2.5vw, 1.125rem);
+  }
+  .text-clamp-body {
+    font-size: clamp(0.75rem, 2vw, 0.875rem);
+  }
+}
+
+/* Executive Light Card styling */
+.executive-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+}
+
+.executive-pill {
+  background: var(--surface-secondary);
+  border: 1px solid var(--border);
+}
+
+.executive-input {
+  background: var(--surface-secondary);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.executive-input:focus {
+  background: var(--surface);
+  border-color: var(--tbg-teal);
+  box-shadow: 0 0 0 3px rgba(57, 145, 141, 0.15);
+}
+
+/* Custom Scrollbar for Columbus Card */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: var(--surface-secondary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--tbg-teal);
+}
+
+/* Pulse animation for Light AI Orb Avatar */
+@keyframes ai-pulse-expand {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+    box-shadow: 0 0 20px rgba(57, 145, 141, 0.35), 0 0 30px rgba(248, 197, 28, 0.25);
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.85;
+  }
+}
+
+.animate-ai-pulse {
+  animation: ai-pulse-expand 3s ease-in-out infinite;
+}
+
+@keyframes ring-wave {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+.animate-ring-wave-1 {
+  animation: ring-wave 2.5s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+.animate-ring-wave-2 {
+  animation: ring-wave 2.5s cubic-bezier(0, 0.2, 0.8, 1) 0.8s infinite;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.25s ease-out forwards;
+}
+
+

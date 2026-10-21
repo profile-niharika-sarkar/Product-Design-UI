@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Solomon Engine — Small Business Cohort</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --navy: #0c2940;
+    --teal: #3f6d67;
+    --gold: #f8c51c;
+    --white: #ffffff;
+    --brown: #c57b4b;
+    --light-bg: #ffffff;
+  }
+
+  body {
+    font-family: 'Open Sans', sans-serif;
+    background: var(--white);
+    color: var(--navy);
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  /* HEADER */
+  .header {
+    background-image: url('TBG - LinkedIn Banner.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    padding: 60px;
+    border-radius: 20px 20px 0 0;
+    position: relative;
+}
+
+
+  .header-label {
+    font-family: 'Montserrat ExtraBold', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--brown);
+    margin-bottom: 10px;
+  }
+
+  .header h1 {
+    font-family: 'Montserrat Bold', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--navy);
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .hero-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
+}
+
+  .header h2 {
+    font-family: 'Montserrat Bold', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--brown);
+    letter-spacing: 0.5px;
+    margin-bottom: 20px;
+  }
+
+  .header-tagline {
+    font-family: 'Montserrat SemiBold', sans-serif;
+    font-size: 14px;
+    color: var(--navy);
+    line-height: 1.6;
+    max-width: 600px;
+    border-left: 3px solid var(--gold);
+    padding-left: 16px;
+  }
+
+  .header-logo {
+    position: absolute;
+    right: 70px;
+    top: 70px;
+    width: 120px;
+}
+
+.hero-cta {
+    width: 100%;
+    text-align: center;
+    margin: 20px 0 10px 0;
+}
+
+.vip-btn {
+    display: inline-block;
+    padding: 18px 30px;
+    background: #f4c21a;
+    color: #0b2d50;
+    padding: 16px 40px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.vip-btn:hover {
+    background: #39918d;
+    color: var(--white);
+    transform: translateY(-2px);
+}
+
+  /* TRANSFORMATION BAR */
+  .transform-bar {
+    background: var(--teal);
+    padding: 18px 48px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .transform-bar .arrow {
+    font-size: 22px;
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .transform-bar p {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.5;
+  }
+
+  .transform-bar span {
+    color: var(--gold);
+  }
+
+  /* PROOF STRIP */
+  .proof-strip {
+    background: var(--light-bg);
+    padding: 20px 48px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    border-bottom: 1px solid #e0e5ea;
+  }
+
+  .proof-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--teal);
+    flex-shrink: 0;
+  }
+
+  .proof-stats {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat .number {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--navy);
+    display: block;
+    line-height: 1;
+  }
+
+  .stat .label {
+    font-size: 11px;
+    color: var(--teal);
+    font-weight: 600;
+  }
+
+  .stat .gold-number {
+    color: #c49a00;
+  }
+
+  .proof-attribution {
+    font-size: 11px;
+    color: #6b7c8d;
+    font-style: italic;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  /* MAIN CONTENT */
+  .main {
+    padding: 36px 48px;
+  }
+
+  .section-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 20px;
+  }
+
+  /* DELIVERABLES GRID */
+  .deliverables {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .deliverable-card {
+    background: var(--navy);
+    border-radius: 10px;
+    padding: 24px 22px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .deliverable-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px; height: 100%;
+    background: var(--gold);
+    border-radius: 10px 0 0 10px;
+  }
+
+  .deliverable-card.teal-card {
+    background: var(--teal);
+  }
+
+  .card-icon {
+    font-size: 20px;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .card-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .card-body {
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.6;
+  }
+
+  /* BOTTOM ROW */
+  .bottom-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  /* INVESTMENT BOX */
+  .investment-box {
+    background: var(--gold);
+    border-radius: 10px;
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .investment-box .inv-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--navy);
+    opacity: 0.7;
+    margin-bottom: 6px;
+  }
+
+  .investment-box .inv-amount {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 40px;
+    font-weight: 800;
+    color: var(--navy);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .investment-box .inv-sub {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--navy);
+    opacity: 0.75;
+    margin-bottom: 14px;
+  }
+
+  .investment-box .inv-detail {
+    font-size: 11.5px;
+    color: var(--navy);
+    opacity: 0.85;
+    line-height: 1.5;
+    border-top: 1px solid rgba(12,41,64,0.2);
+    padding-top: 12px;
+  }
+
+  /* CAPACITY + TAX BOX */
+  .right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .capacity-box {
+    background: var(--light-bg);
+    border: 2px solid var(--navy);
+    border-radius: 10px;
+    padding: 20px 22px;
+    flex: 1;
+  }
+  
+  .architecture-image {
+    width: 100%;
+    margin: 0 auto 40px auto;
+}
+
+.architecture-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+  .capacity-box .cap-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .dot-row {
+    display: flex;
+    gap: 6px;
+    margin: 10px 0;
+  }
+
+  .dot {
+    width: 14px; height: 14px;
+    background: var(--gold);
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .dot.empty {
+    background: transparent;
+    border: 2px solid #c5cdd5;
+  }
+
+  .capacity-box p {
+    font-size: 11.5px;
+    color: #4a5c6a;
+    line-height: 1.5;
+  }
+
+  .tax-box {
+    background: var(--navy);
+    border-radius: 10px;
+    padding: 18px 22px;
+  }
+
+  .tax-box .tax-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+
+  .tax-box p {
+    font-size: 11.5px;
+    color: rgba(255,255,255,0.82);
+    line-height: 1.55;
+  }
+
+  .tax-summary {
+    margin: 25px 0;
+    padding: 22px 28px;
+
+    background: #ffffff;
+
+    border: 1px solid #d7dde3;
+    border-left: 6px solid #f8c51c;
+
+    border-radius: 12px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+
+    color: var(--navy);
+}
+
+  /* CTA */
+  .cta-block {
+    background: var(--gold);
+    border-radius: 10px;
+    padding: 24px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 28px;
+  }
+
+  .cta-block .cta-text h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+
+  .cta-block .cta-text p {
+    font-size: 13px;
+    color: var(--navy);
+    opacity: 0.8;
+  }
+
+  .cta-block .cta-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  .cta-contact a, .cta-contact span {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--navy);
+    text-decoration: none;
+  }
+
+  .cta-contact .url {
+    font-size: 13px;
+    text-decoration: underline;
+  }
+
+  /* CONSULTING RATE */
+  .consulting-rate-box {
+    background: var(--light-bg);
+    border: 2px solid var(--teal);
+    border-radius: 10px;
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin-bottom: 28px;
+  }
+
+  .consulting-rate-box .rate-icon { font-size: 28px; flex-shrink: 0; }
+  .consulting-rate-box .rate-title { font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 700; color: var(--teal); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+  .consulting-rate-box .rate-body { font-size: 12.5px; color: var(--navy); line-height: 1.6; }
+  .consulting-rate-box .rate-body strong { color: var(--teal); }
+  .consulting-rate-box .rate-amount { font-family: 'Montserrat', sans-serif; font-size: 28px; font-weight: 800; color: var(--navy); margin-left: auto; flex-shrink: 0; white-space: nowrap; }
+  .consulting-rate-box .rate-amount span { font-size: 13px; font-weight: 600; color: var(--teal); display: block; text-align: right; }
+
+  /* FOOTER */
+  .footer {
+    border-top: 1px solid #dde3e9;
+    padding: 16px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-brand {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--navy);
+    letter-spacing: 0.5px;
+  }
+
+  .footer-brand span {
+    color: var(--teal);
+    font-weight: 400;
+  }
+
+  .footer-tagline {
+    font-size: 11px;
+    color: #ffffff;
+    font-style: italic;
+  }
+
+  .footer-url {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--teal);
+    text-decoration: none;
+  }
+</style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-label">Executive AI Architecture</div>
+    <h1>The Solomon Engine</h1>
+     <img
+        src="Colour-Logo-Text.png"
+        alt="Bradbury Group"
+        class="header-logo">
+    <h2>Small Business Cohort — Under $10M Revenue</h2>
+    <p class="header-tagline">Move from operational overwhelm to orchestrating clear strategic outcomes. Reclaim strategic capacity. Clear high-stakes bottlenecks. Deploy an automated external cortex — without expanding payroll.</p>
+  </div>
+
+  <!-- TRANSFORMATION BAR -->
+  <div class="transform-bar">
+    <span class="arrow">→</span>
+    <p>Designed for executives ready to unlock AI for strategic work that minimizes <span>transactional noise</span> and maximizes <span>strategic output</span>. We will show you how to use the tools that leaders are using right now to lead in AI adoption.</p>
+  </div>
+
+</div> <!-- transform-bar ends -->
+
+<div class="hero-cta">
+    <a href="https://thebradburygroup.com/vip/" class="vip-btn">
+        Secure Your Seat
+    </a>
+</div>
+</div>
+ <div class="architecture-image">
+    <img src="TSE.png" alt="Architecture Framework">
+
+    <div class="architecture-image">
+    <img src="Beta Cohort.png" alt="Architecture Framework">
+</div>
+
+    </div>
+
+    <!-- BOTTOM ROW -->
+    <div class="bottom-row">
+
+      <!-- INVESTMENT -->
+      <div class="investment-box">
+        <div class="inv-label">Total Small Business Investment</div>
+        <div class="inv-amount">$6,000</div>
+        <div class="inv-sub">Flat Rate · No Hidden Fees</div>
+        <div class="inv-detail">Invoices made out to your business name. May qualify as a 100% deductible business expense under IRC Section 162 — consult your tax professional. The Solomon Engine is a capital investment in operational capacity, not a course.</div>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="right-column">
+
+        <div class="capacity-box">
+          <div class="cap-title">⚡ Cohort Capacity — Strictly Limited</div>
+          <div class="dot-row">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot empty"></span>
+            <span class="dot empty"></span>
+          </div>
+          <p>Firm capacity of <strong>5 active leaders per cohort</strong> to protect the quality of custom delivery access. Custom architecture cannot be delivered at scale — and we won't try.</p>
+        </div>
+
+    </div> <!-- closes right-column -->
+</div> <!-- closes bottom-row -->
+
+<!-- TAX DEDUCTIBLE SECTION -->
+<div class="tax-summary">
+
+    <h2>The Smart Executive Upgrade: 100% Tax Deductible</h2>
+
+    <h3>How to Offset Your Solomon Engine Investment Under IRC Section 162</h3>
+
+    <p>
+        Investing in your AI architecture isn't just a powerful business move—it's a strategic tax advantage.<p></p>
+        Under <strong>IRC Section 162</strong>, your <strong>$6,000 investment</strong> can be fully deducted as a legitimate business expense.
+    </p><br>
+
+    <h3>The Two Rules for a 100% Write-Off</h3>
+
+    <p>
+        To qualify for this tax advantage, your training simply needs to meet two criteria:
+    </p>
+
+    <p>
+        <strong>Maintain & Improve:</strong>
+        The training must directly sharpen skills needed for your current, daily business operations.
+    </p>
+
+    <p>
+        <strong>Advance Your Current Path:</strong>
+        The course must enhance your existing business scope, rather than qualifying you for an entirely new career.
+    </p><br>
+
+    <h3>What You Can Legally Deduct</h3>
+
+    <p>
+        You can write off the entire scope of your AI implementation:
+    </p>
+
+    <p>
+        <strong>The Solomon Engine Cohort:</strong>
+        Executive AI training, bootcamps, and strategic workshops.
+    </p>
+
+    <p>
+        <strong>Your AI Tooling:</strong>
+        Monthly subscriptions for AI tools used during and after your learning phase.
+    </p>
+
+    <p>
+        <strong>Custom Automations:</strong>
+        Strategic logic training and bespoke infrastructure deployment.
+    </p><br>
+
+    <h3>How to Easily Apply It</h3>
+
+    <p>
+        Claiming your deduction is seamless. When tax season arrives, you or your CPA will write these costs off under
+        <strong>"Professional Development," "Education,"</strong> or <strong>"Other Expenses"</strong>
+        on your Schedule C (Sole Proprietor/LLC) or Form 1120-S (S-Corp).
+    </p><br>
+
+    <p>
+        📝 <strong>Your Audit-Proof Paper Trail:</strong>
+        Simply save your course syllabus and receipts alongside a quick 2-sentence memo detailing how The Solomon Engine saves your business time and money (such as reclaiming 14 hours weekly).
+    </p>
+
+    <p>
+        <em>
+            Consult your tax professional to ensure you are effectively leveraging IRC Section 162 and any other deductions for your specific situation.
+        </em>
+    </p>
+
+
+      </div>
+    </div>
+
+    <!-- CONSULTING RATE -->
+    <div class="consulting-rate-box">
+      <div class="rate-icon">💡</div>
+      <div class="rate-content">
+        <div class="rate-title">Consulting Rate & Credit Policy</div>
+        <div class="rate-body">Standard advisory consulting is billed at <strong>$225 / hour</strong>. Any consulting fees paid prior to cohort enrollment are <strong>fully applied toward your total cohort investment</strong> — your discovery call is a head start, not a sunk cost.</div>
+      </div>
+      <div class="rate-amount">$225<span>per hour</span></div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-brand">The Bradbury Group <span>· Partners in Learning & Growth</span></div>
+    <div class="footer-tagline">We train the people. You build the strategy.</div>
+    <a href="https://www.thebradburygroup.com" class="footer-url">thebradburygroup.com</a>
+  </div>
+
+</body>
+</html>
