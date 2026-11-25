@@ -1,0 +1,404 @@
+{
+  "name": "UX Audit Rubric",
+  "version": "1.0",
+  "scale": {
+    "levels": {
+      "0": "Fail: the fail sentence describes the page, or the element is missing entirely.",
+      "1": "Poor: mostly failing; one weak redeeming element.",
+      "2": "Mixed: about half right; a visitor or crawler would notice the gaps.",
+      "3": "Good: passes with minor, low-risk gaps.",
+      "4": "Pass: the pass sentence describes the page with nothing material missing."
+    },
+    "points_formula": "points = weight * level / 4",
+    "na_rule": "A criterion marked not applicable is dropped and its weight is shared out across the other criteria in the same category, pro rata."
+  },
+  "categories": [
+    {
+      "id": "ux",
+      "name": "UX & conversion",
+      "weight": 30
+    },
+    {
+      "id": "seo",
+      "name": "SEO",
+      "weight": 30
+    },
+    {
+      "id": "content",
+      "name": "Content",
+      "weight": 20
+    },
+    {
+      "id": "trust",
+      "name": "Trust",
+      "weight": 20
+    }
+  ],
+  "criteria": [
+    {
+      "id": "ux.primary_cta",
+      "category": "ux",
+      "name": "Primary CTA: clear and on-site",
+      "weight": 6,
+      "blocker_class": "critical",
+      "pass": "One visually dominant primary CTA sits in the first viewport, its label names the action, and it keeps the visitor on the site.",
+      "fail": "There is no clear primary CTA in the first viewport, or the main CTA sends the visitor to another domain.",
+      "evidence_hint": "Hero CTA label + href; note the domain it resolves to.",
+      "signals": [
+        "ctas",
+        "external_links"
+      ]
+    },
+    {
+      "id": "ux.cta_fidelity",
+      "category": "ux",
+      "name": "CTA label matches destination",
+      "weight": 5,
+      "blocker_class": "critical",
+      "pass": "Every CTA lands on content that delivers what its label promises (an assessment opens an assessment, 'Learn more about X' opens X).",
+      "fail": "Two or more CTAs lead somewhere their label does not promise, such as a contact form, an unrelated anchor or an external tool.",
+      "evidence_hint": "Table of CTA label -> destination; quote each mismatch.",
+      "signals": [
+        "ctas"
+      ]
+    },
+    {
+      "id": "ux.conversion_path",
+      "category": "ux",
+      "name": "Conversion path and booking friction",
+      "weight": 6,
+      "blocker_class": "critical",
+      "pass": "A ready buyer can convert on-site in two steps or fewer, e.g. an embedded scheduler or a short form with an instant confirmation.",
+      "fail": "There is no on-site way to convert, or the only route is a generic contact form followed by an unstated wait.",
+      "evidence_hint": "The form fields, scheduler embed (Calendly/Cal.com iframe) or its absence in the booking section.",
+      "signals": [
+        "forms",
+        "embeds"
+      ]
+    },
+    {
+      "id": "ux.navigation",
+      "category": "ux",
+      "name": "Navigation and information architecture",
+      "weight": 4,
+      "blocker_class": "high",
+      "pass": "The main nav has 7 or fewer plainly worded items, each leading to a real destination, and the current location is clear.",
+      "fail": "Nav labels are vague or jargon, items are broken or missing, or a visitor cannot find the core offers from the nav.",
+      "evidence_hint": "Nav labels and hrefs.",
+      "signals": [
+        "nav"
+      ]
+    },
+    {
+      "id": "ux.visual_hierarchy",
+      "category": "ux",
+      "name": "Visual hierarchy and component consistency",
+      "weight": 4,
+      "blocker_class": "medium",
+      "pass": "One consistent button system (primary/secondary/text), a clear type scale, and repeated components look and behave the same.",
+      "fail": "CTAs come in several unrelated styles, headings compete at equal weight, and similar cards use different layouts.",
+      "evidence_hint": "Button class/style variants; heading levels used out of order; screenshots.",
+      "signals": [
+        "ctas",
+        "headings",
+        "screenshot"
+      ]
+    },
+    {
+      "id": "ux.responsive",
+      "category": "ux",
+      "name": "Responsive build",
+      "weight": 3,
+      "blocker_class": "high",
+      "pass": "One fluid DOM serves every breakpoint, a viewport meta tag is set, and there is no horizontal scroll at 375px.",
+      "fail": "Content is duplicated in the DOM for mobile and desktop, the viewport meta is missing, or the page overflows on a phone.",
+      "evidence_hint": "Viewport meta, duplicated heading text, mobile overflow width from the render.",
+      "signals": [
+        "viewport",
+        "duplicate_headings",
+        "mobile_overflow"
+      ]
+    },
+    {
+      "id": "ux.accessibility",
+      "category": "ux",
+      "name": "Accessibility basics (WCAG 2.1 A/AA)",
+      "weight": 2,
+      "blocker_class": "high",
+      "pass": "Images have meaningful alt text, html has a lang attribute, a skip link exists, inputs have labels and text contrast looks adequate.",
+      "fail": "Images use filenames or stock captions as alt text, form inputs are unlabeled, or content is announced twice to screen readers.",
+      "evidence_hint": "Count of images with missing/filename/stock alt; lang attribute; unlabeled inputs.",
+      "signals": [
+        "images",
+        "lang",
+        "forms",
+        "skip_link"
+      ]
+    },
+    {
+      "id": "seo.indexable_architecture",
+      "category": "seo",
+      "name": "Indexable page architecture",
+      "weight": 7,
+      "blocker_class": "critical",
+      "pass": "Each core service or offer has its own crawlable URL with unique copy, and the nav links to those URLs.",
+      "fail": "Core offers live only as #anchor sections of one page, or content is rendered only by JavaScript with no crawlable URL.",
+      "evidence_hint": "Nav hrefs (anchor vs page), sitemap URL count, list of service URLs.",
+      "signals": [
+        "nav",
+        "internal_pages",
+        "sitemap"
+      ]
+    },
+    {
+      "id": "seo.title_meta",
+      "category": "seo",
+      "name": "Title tag and meta description",
+      "weight": 4,
+      "blocker_class": "high",
+      "pass": "The title (under 60 chars) names the brand and the category keyword, and a unique 120-160 char meta description states the offer.",
+      "fail": "The title is missing, generic or just the brand name, or the meta description is missing.",
+      "evidence_hint": "Quote <title> and meta description with their lengths.",
+      "signals": [
+        "title",
+        "meta_description"
+      ]
+    },
+    {
+      "id": "seo.headings",
+      "category": "seo",
+      "name": "Heading structure",
+      "weight": 4,
+      "blocker_class": "high",
+      "pass": "Exactly one H1 holds the core keyword theme, and H2/H3s follow in a logical outline with no duplicated headings.",
+      "fail": "There is no H1, more than one H1, or headings are duplicated or used for styling rather than structure.",
+      "evidence_hint": "H1 list with count; duplicated heading text.",
+      "signals": [
+        "headings",
+        "duplicate_headings"
+      ]
+    },
+    {
+      "id": "seo.image_alt",
+      "category": "seo",
+      "name": "Image alt text",
+      "weight": 4,
+      "blocker_class": "medium",
+      "pass": "90% or more of content images have descriptive, context-specific alt text, and logos carry the brand name.",
+      "fail": "Most images have empty alt text, filename alt text (1.png, IMG_123) or stock-library captions.",
+      "evidence_hint": "Counts: total / empty / filename-like / stock-like alt; quote the worst examples.",
+      "signals": [
+        "images"
+      ]
+    },
+    {
+      "id": "seo.structured_data",
+      "category": "seo",
+      "name": "Structured data (schema.org)",
+      "weight": 4,
+      "blocker_class": "medium",
+      "pass": "Valid JSON-LD for Organization plus the page-relevant types (Service, FAQPage, Person, Product, Article) is present.",
+      "fail": "There is no structured data at all.",
+      "evidence_hint": "List of JSON-LD @type values found.",
+      "signals": [
+        "jsonld"
+      ]
+    },
+    {
+      "id": "seo.internal_linking",
+      "category": "seo",
+      "name": "Internal linking",
+      "weight": 3,
+      "blocker_class": "medium",
+      "pass": "Pages link to related service, case-study and blog pages with descriptive anchor text, and nothing important is orphaned.",
+      "fail": "Internal links are almost all #anchors, or they use non-descriptive text like 'click here' and 'learn more'.",
+      "evidence_hint": "Count of internal page links vs anchors; generic anchor texts.",
+      "signals": [
+        "links"
+      ]
+    },
+    {
+      "id": "seo.technical",
+      "category": "seo",
+      "name": "Technical crawl basics",
+      "weight": 4,
+      "blocker_class": "high",
+      "pass": "HTTPS, a self-referencing canonical, robots.txt and an XML sitemap, Open Graph tags, and no noindex on public pages.",
+      "fail": "A public page is noindexed, the canonical points elsewhere, or there is no sitemap and no canonical.",
+      "evidence_hint": "Canonical, robots meta, robots.txt, sitemap status, og: tags.",
+      "signals": [
+        "canonical",
+        "robots",
+        "sitemap",
+        "og"
+      ]
+    },
+    {
+      "id": "content.value_prop",
+      "category": "content",
+      "name": "Value proposition clarity",
+      "weight": 5,
+      "blocker_class": "high",
+      "pass": "Within 5 seconds the hero says who it is for, what they get and why this provider is different.",
+      "fail": "The hero is generic or clever-but-vague, and a visitor cannot say what is sold or to whom.",
+      "evidence_hint": "Quote the H1 + subheadline.",
+      "signals": [
+        "headings",
+        "hero_text"
+      ]
+    },
+    {
+      "id": "content.audience_pain",
+      "category": "content",
+      "name": "Audience and pain articulation",
+      "weight": 3,
+      "blocker_class": "medium",
+      "pass": "The copy names the target audience's specific problems in their own language.",
+      "fail": "There is no audience or problem framing, and the page only lists features or services.",
+      "evidence_hint": "Quote the problem/pain section.",
+      "signals": [
+        "headings",
+        "text"
+      ]
+    },
+    {
+      "id": "content.offer_specificity",
+      "category": "content",
+      "name": "Offer specificity",
+      "weight": 4,
+      "blocker_class": "high",
+      "pass": "Each offer states deliverables, format and who it suits.",
+      "fail": "Offers are one-line labels with no deliverables.",
+      "evidence_hint": "Quote each service blurb; note any pricing/engagement text or its absence.",
+      "signals": [
+        "text",
+        "pricing_terms"
+      ]
+    },
+    {
+      "id": "content.proof_depth",
+      "category": "content",
+      "name": "Proof depth (case studies)",
+      "weight": 4,
+      "blocker_class": "high",
+      "pass": "At least one case study gives the client context, the intervention and a measurable before/after outcome.",
+      "fail": "There are no case studies, only generic claims or one-line testimonials.",
+      "evidence_hint": "Case-study links/sections, or their absence.",
+      "signals": [
+        "internal_pages",
+        "text"
+      ]
+    },
+    {
+      "id": "content.freshness",
+      "category": "content",
+      "name": "Content freshness and velocity",
+      "weight": 2,
+      "blocker_class": "low",
+      "pass": "The blog or resources have dated content from the last 90 days, published regularly.",
+      "fail": "There is no dated content, or the newest item is over 12 months old.",
+      "evidence_hint": "Most recent visible post dates.",
+      "signals": [
+        "dates"
+      ]
+    },
+    {
+      "id": "content.readability_voice",
+      "category": "content",
+      "name": "Readability and brand voice",
+      "weight": 2,
+      "blocker_class": "low",
+      "pass": "Copy is scannable (short paragraphs, descriptive subheads, plain words) and the voice stays consistent and distinct.",
+      "fail": "Walls of text, jargon or buzzword stacks, typos, or placeholder or lorem ipsum copy.",
+      "evidence_hint": "Quote an example paragraph; note placeholder text.",
+      "signals": [
+        "text"
+      ]
+    },
+    {
+      "id": "trust.claim_substantiation",
+      "category": "trust",
+      "name": "Claim substantiation",
+      "weight": 5,
+      "blocker_class": "high",
+      "pass": "Every statistic or performance claim shows its source, sample or method (footnote, link or 'based on N clients').",
+      "fail": "Bold numeric claims appear with no source, sample size or method.",
+      "evidence_hint": "Quote each stat and whether a source is shown.",
+      "signals": [
+        "stats"
+      ]
+    },
+    {
+      "id": "trust.social_proof",
+      "category": "trust",
+      "name": "Identifiable social proof",
+      "weight": 4,
+      "blocker_class": "high",
+      "pass": "Testimonials carry a full name, title and organisation, and client logos are recognisable and named in alt text or captions.",
+      "fail": "Testimonials are anonymous or absent, and logos are unidentifiable (filename alt, no captions).",
+      "evidence_hint": "Testimonial attributions; logo alt texts.",
+      "signals": [
+        "images",
+        "text"
+      ]
+    },
+    {
+      "id": "trust.founder_team",
+      "category": "trust",
+      "name": "Founder and team credibility",
+      "weight": 3,
+      "blocker_class": "medium",
+      "pass": "Named people with photos, relevant credentials and verifiable history (LinkedIn, past employers, certifications).",
+      "fail": "No named people, or only stock photos and vague 'our team' copy.",
+      "evidence_hint": "Names, credentials, photos found.",
+      "signals": [
+        "text",
+        "images"
+      ]
+    },
+    {
+      "id": "trust.maintenance",
+      "category": "trust",
+      "name": "Maintenance signals",
+      "weight": 2,
+      "blocker_class": "medium",
+      "pass": "The copyright year is current, there are no broken links or console errors, and no placeholder or 'coming soon' content.",
+      "fail": "Outdated copyright, broken links, visible errors or placeholder sections.",
+      "evidence_hint": "Footer copyright text verbatim; console errors; placeholder text.",
+      "signals": [
+        "copyright",
+        "console_errors",
+        "placeholders"
+      ]
+    },
+    {
+      "id": "trust.contact_legitimacy",
+      "category": "trust",
+      "name": "Contact and legitimacy",
+      "weight": 3,
+      "blocker_class": "medium",
+      "pass": "Direct contact details (email or phone, a location), privacy policy and terms are linked, and there are active social profiles beyond one channel.",
+      "fail": "Contact is only possible through a form, there is no privacy policy, and no verifiable business identity.",
+      "evidence_hint": "mailto/tel links, address, privacy/terms links, social links.",
+      "signals": [
+        "contact",
+        "legal_links",
+        "social_links"
+      ]
+    },
+    {
+      "id": "trust.pricing_transparency",
+      "category": "trust",
+      "name": "Pricing transparency",
+      "weight": 3,
+      "blocker_class": "medium",
+      "pass": "Prices, from-prices or packaged tiers are published.",
+      "fail": "No pricing or engagement-model information anywhere.",
+      "evidence_hint": "Pricing text or its absence.",
+      "signals": [
+        "pricing_terms"
+      ]
+    }
+  ],
+  "note": "First draft, before calibration against the Bradbury benchmark. Kept so evals can show the before/after. See docs/benchmark.md."
+}

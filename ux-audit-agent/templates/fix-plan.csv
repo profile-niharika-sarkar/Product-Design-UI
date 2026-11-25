@@ -1,0 +1,2 @@
+id,issue,evidence,page,criterion,severity,effort,impact,quadrant,recommended_fix,owner
+F01,Primary hero CTA leaves the site for ElevenLabs,"`hero CTA` ""Discover Your AI Readiness -> elevenlabs.io/app/talk-to?agent_id=...""",/,ux.primary_cta,critical,S,high,Quick wins,Embed the agent on-site as an inline widget or branded modal; never let the primary CTA exit the domain.,Dev
