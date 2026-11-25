@@ -1,0 +1,61 @@
+{
+  "about": "Regression expectations for the UX audit agent. A new agent run (a fresh scoresheet) must land inside these ranges and surface these blockers. Ranges were set from the validated v2 run: overall +/-5, categories +/-12. Change a range only with a note in docs/benchmark.md explaining why.",
+  "cases": {
+    "bradbury-2026-03": {
+      "scoresheet": "cases/bradbury-2026-03/scoresheet.json",
+      "overall": [43, 53],
+      "categories": {"ux": [31, 55], "seo": [23, 47], "content": [49, 73], "trust": [48, 72]},
+      "benchmark": {
+        "source": "Manual audit 'Website - Analysis and Audit' (UX Research-TBG), March 2026",
+        "overall": 54, "tolerance": 8,
+        "categories": {"ux": 55, "seo": 38, "content": 60, "trust": 68}, "category_tolerance": 15
+      },
+      "must_find": [
+        {"id": "offsite-primary-cta", "criteria": ["ux.primary_cta"], "keywords": ["elevenlabs", "leaves", "external", "off-site"], "in_top": 5},
+        {"id": "assessment-broken-promise", "criteria": ["ux.cta_fidelity"], "keywords": ["assessment", "columbus"], "in_top": 5},
+        {"id": "single-page-architecture", "criteria": ["seo.indexable_architecture"], "keywords": ["anchor", "single-page", "url"], "in_top": 5},
+        {"id": "unsourced-statistics", "criteria": ["trust.claim_substantiation"], "keywords": ["source", "statistic"], "in_top": 7},
+        {"id": "duplicate-hero", "criteria": ["seo.headings", "ux.responsive"], "keywords": ["duplicat"], "in_top": 8},
+        {"id": "no-booking-widget", "criteria": ["ux.conversion_path"], "keywords": ["booking", "scheduler", "calendly"], "in_top": 7},
+        {"id": "unnamed-logos", "criteria": ["trust.social_proof", "seo.image_alt"], "keywords": ["logo"]},
+        {"id": "outdated-copyright", "criteria": ["trust.maintenance"], "keywords": ["copyright", "2025"]}
+      ]
+    },
+    "tse-enterprise": {
+      "scoresheet": "cases/tse-enterprise/scoresheet.json",
+      "overall": [42, 52],
+      "categories": {"ux": [42, 66], "seo": [25, 49], "content": [52, 76], "trust": [22, 46]},
+      "must_find": [
+        {"id": "price-contradiction", "criteria": ["trust.claim_substantiation", "trust.maintenance", "content.offer_specificity"], "keywords": ["6,000", "contradiction", "price"], "in_top": 3},
+        {"id": "schedule-cta-no-link", "criteria": ["ux.cta_fidelity", "ux.conversion_path"], "keywords": ["schedul", "link", "booking"], "in_top": 5},
+        {"id": "proof-locked-in-images", "criteria": ["seo.image_alt", "ux.accessibility", "seo.headings"], "keywords": ["image"], "in_top": 5},
+        {"id": "missing-meta-description", "criteria": ["seo.title_meta"], "keywords": ["meta description", "description"]}
+      ]
+    },
+    "m21-agency": {
+      "scoresheet": "cases/m21-agency/scoresheet.json",
+      "overall": [37, 47],
+      "categories": {"ux": [50, 74], "seo": [13, 37], "content": [24, 48], "trust": [33, 57]},
+      "must_find": [
+        {"id": "spa-no-service-urls", "criteria": ["seo.indexable_architecture"], "keywords": ["url", "rendered", "one-pager", "single"], "in_top": 3},
+        {"id": "filename-alt-logos", "criteria": ["seo.image_alt", "ux.accessibility"], "keywords": ["filename"], "in_top": 5},
+        {"id": "bolt-og-image", "criteria": ["seo.technical", "trust.maintenance"], "keywords": ["bolt"]},
+        {"id": "no-case-studies", "criteria": ["content.proof_depth"], "keywords": ["case"]},
+        {"id": "unlabeled-inputs", "criteria": ["ux.accessibility"], "keywords": ["label"]}
+      ]
+    },
+    "m21-outdoor": {
+      "scoresheet": "cases/m21-outdoor/scoresheet.json",
+      "overall": [40, 50],
+      "categories": {"ux": [50, 74], "seo": [16, 40], "content": [41, 65], "trust": [24, 48]},
+      "must_find": [
+        {"id": "daily-views-contradiction", "criteria": ["trust.claim_substantiation"], "keywords": ["daily", "1m"], "in_top": 3},
+        {"id": "coming-soon-placeholders", "criteria": ["trust.maintenance"], "keywords": ["coming soon"], "in_top": 8},
+        {"id": "spa-no-location-urls", "criteria": ["seo.indexable_architecture"], "keywords": ["page", "url", "rendered"], "in_top": 3},
+        {"id": "title-copied", "criteria": ["seo.title_meta"], "keywords": ["title"]},
+        {"id": "filename-alt-logos", "criteria": ["seo.image_alt", "ux.accessibility"], "keywords": ["filename", "alt"]},
+        {"id": "bolt-og-image", "criteria": ["seo.technical"], "keywords": ["bolt"]}
+      ]
+    }
+  }
+}

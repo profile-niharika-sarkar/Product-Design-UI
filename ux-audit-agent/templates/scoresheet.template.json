@@ -1,0 +1,361 @@
+{
+  "site": {
+    "name": "<Site name>",
+    "url": "<https://...>",
+    "audited_at": "<YYYY-MM-DD>",
+    "input_mode": "<rendered | url | html | text | screenshots>",
+    "pages_reviewed": [
+      "/"
+    ]
+  },
+  "summary": "<2-3 sentences: what works, the biggest problem, the cost of not fixing it. Quote the page.>",
+  "criteria": {
+    "ux.primary_cta": {
+      "level": null,
+      "confidence": "high",
+      "evidence": [
+        {
+          "page": "/",
+          "element": "<selector / tag / filename / URL>",
+          "quote": "<verbatim text or attribute>"
+        }
+      ],
+      "rationale": "<one line. Pass = One visually dominant primary CTA sits in the first viewport, its label names the action, and it keeps the visitor on the site.>"
+    },
+    "ux.cta_fidelity": {
+      "level": null,
+      "confidence": "high",
+      "evidence": [
+        {
+          "page": "/",
+          "element": "<selector / tag / filename / URL>",
+          "quote": "<verbatim text or attribute>"
+        }
+      ],
+      "rationale": "<one line. Pass = Every CTA lands on content that delivers what its label promises (an assessment opens an assessment, 'Learn more about X' opens X).>"
+    },
+    "ux.conversion_path": {
+      "level": null,
+      "confidence": "high",
+      "evidence": [
+        {
+          "page": "/",
+          "element": "<selector / tag / filename / URL>",
+          "quote": "<verbatim text or attribute>"
+        }
+      ],
+      "rationale": "<one line. Pass = A ready buyer can convert on-site in two steps or fewer, e.g. an embedded scheduler or a short form with an instant confirmation.>"
+    },
+    "ux.navigation": {
+      "level": null,
+      "confidence": "high",
+      "evidence": [
+        {
+          "page": "/",
+          "element": "<selector / tag / filename / URL>",
+          "quote": "<verbatim text or attribute>"
+        }
+      ],
+      "rationale": "<one line. Pass = The main nav has 7 or fewer plainly worded items, each leading to a real destination, and the current location is clear.>"
+    },
+    "ux.persuasion_flow": {
+      "level": null,
+      "confidence": "high",
+      "evidence": [
+        {
+          "page": "/",
+          "element": "<selector / tag / filename / URL>",
+          "quote": "<verbatim text or attribute>"
+        }
+      ],
+      "rationale": "<one line. Pass = Sections run hook -> problem -> offer -> proof -> objection handling -> CTA, with a CTA placed right after the strongest proof.>"
+    },
+    "ux.visual_hierarchy": {
+      "level": null,
+      "confidence": "high",
+      "evidence": [
+        {
+          "page": "/",
+          "element": "<selector / tag / filename / URL>",
+          "quote": "<verbatim text or attribute>"
+        }
+      ],
+      "rationale": "<one line. Pass = One consistent button system (primary/secondary/text), a clear type scale, and repeated components look and behave the same.>"
+    },
+    "ux.responsive": {
+      "level": null,
+      "confidence": "high",
+      "evidence": [
+        {
+          "page": "/",
+          "element": "<selector / tag / filename / URL>",
+          "quote": "<verbatim text or attribute>"
+        }
+      ],
+      "rationale": "<one line. Pass = One fluid DOM serves every breakpoint, a viewport meta tag is set, and there is no horizontal scroll at 375px.>"
+    },
+    "ux.accessibility": {
+      "level": null,
+      "confidence": "high",
+      "evidence": [
+        {
+          "page": "/",
+          "element": "<selector / tag / filename / URL>",
+          "quote": "<verbatim text or attribute>"
+        }
+      ],
+      "rationale": "<one line. Pass = Images have meaningful alt text, html has a lang attribute, a skip link exists, inputs have labels and text contrast looks adequate.>"
+    },
+    "seo.indexable_architecture": {
+      "level": null,
+      "confidence": "high",
+      "evidence": [
+        {
+          "page": "/",
+          "element": "<selector / tag / filename / URL>",
+          "quote": "<verbatim text or attribute>"
+        }
+      ],
+      "rationale": "<one line. Pass = Each core service or offer has its own crawlable URL with unique copy, and the nav links to those URLs.>"
+    },
+    "seo.title_meta": {
+      "level": null,
+      "confidence": "high",
+      "evidence": [
+        {
+          "page": "/",
+          "element": "<selector / tag / filename / URL>",
+          "quote": "<verbatim text or attribute>"
+        }
+      ],
+      "rationale": "<one line. Pass = The title (under 60 chars) names the brand and the category keyword, and a unique 120-160 char meta description states the offer.>"
+    },
+    "seo.headings": {
+      "level": null,
+      "confidence": "high",
+      "evidence": [
+        {
+          "page": "/",
+          "element": "<selector / tag / filename / URL>",
+          "quote": "<verbatim text or attribute>"
+        }
+      ],
+      "rationale": "<one line. Pass = Exactly one H1 holds the core keyword theme, and H2/H3s follow in a logical outline with no duplicated headings.>"
+    },
+    "seo.image_alt": {
+      "level": null,
+      "confidence": "high",
+      "evidence": [
+        {
+          "page": "/",
+          "element": "<selector / tag / filename / URL>",
+          "quote": "<verbatim text or attribute>"
+        }
+      ],
+      "rationale": "<one line. Pass = 90% or more of content images have descriptive, context-specific alt text, and logos carry the brand name.>"
+    },
+    "seo.structured_data": {
+      "level": null,
+      "confidence": "high",
+      "evidence": [
+        {
+          "page": "/",
+          "element": "<selector / tag / filename / URL>",
+          "quote": "<verbatim text or attribute>"
+        }
+      ],
+      "rationale": "<one line. Pass = Valid JSON-LD for Organization plus the page-relevant types (Service, FAQPage, Person, Product, Article) is present.>"
+    },
+    "seo.internal_linking": {
+      "level": null,
+      "confidence": "high",
+      "evidence": [
+        {
+          "page": "/",
+          "element": "<selector / tag / filename / URL>",
+          "quote": "<verbatim text or attribute>"
+        }
+      ],
+      "rationale": "<one line. Pass = Pages link to related service, case-study and blog pages with descriptive anchor text, and nothing important is orphaned.>"
+    },
+    "seo.technical": {
+      "level": null,
+      "confidence": "high",
+      "evidence": [
+        {
+          "page": "/",
+          "element": "<selector / tag / filename / URL>",
+          "quote": "<verbatim text or attribute>"
+        }
+      ],
+      "rationale": "<one line. Pass = HTTPS, a self-referencing canonical, robots.txt and an XML sitemap, Open Graph tags, and no noindex on public pages.>"
+    },
+    "content.value_prop": {
+      "level": null,
+      "confidence": "high",
+      "evidence": [
+        {
+          "page": "/",
+          "element": "<selector / tag / filename / URL>",
+          "quote": "<verbatim text or attribute>"
+        }
+      ],
+      "rationale": "<one line. Pass = Within 5 seconds the hero says who it is for, what they get and why this provider is different.>"
+    },
+    "content.audience_pain": {
+      "level": null,
+      "confidence": "high",
+      "evidence": [
+        {
+          "page": "/",
+          "element": "<selector / tag / filename / URL>",
+          "quote": "<verbatim text or attribute>"
+        }
+      ],
+      "rationale": "<one line. Pass = The copy names the target audience's specific problems in their own language.>"
+    },
+    "content.offer_specificity": {
+      "level": null,
+      "confidence": "high",
+      "evidence": [
+        {
+          "page": "/",
+          "element": "<selector / tag / filename / URL>",
+          "quote": "<verbatim text or attribute>"
+        }
+      ],
+      "rationale": "<one line. Pass = Each offer states deliverables, format and who it suits, plus a pricing or engagement-model signal (from-price, tiers, retainer or project).>"
+    },
+    "content.proof_depth": {
+      "level": null,
+      "confidence": "high",
+      "evidence": [
+        {
+          "page": "/",
+          "element": "<selector / tag / filename / URL>",
+          "quote": "<verbatim text or attribute>"
+        }
+      ],
+      "rationale": "<one line. Pass = At least one case study gives the client context, the intervention and a measurable before/after outcome.>"
+    },
+    "content.freshness": {
+      "level": null,
+      "confidence": "high",
+      "evidence": [
+        {
+          "page": "/",
+          "element": "<selector / tag / filename / URL>",
+          "quote": "<verbatim text or attribute>"
+        }
+      ],
+      "rationale": "<one line. Pass = The blog or resources have dated content from the last 90 days, published regularly.>"
+    },
+    "content.readability_voice": {
+      "level": null,
+      "confidence": "high",
+      "evidence": [
+        {
+          "page": "/",
+          "element": "<selector / tag / filename / URL>",
+          "quote": "<verbatim text or attribute>"
+        }
+      ],
+      "rationale": "<one line. Pass = Copy is scannable (short paragraphs, descriptive subheads, plain words) and the voice stays consistent and distinct.>"
+    },
+    "trust.claim_substantiation": {
+      "level": null,
+      "confidence": "high",
+      "evidence": [
+        {
+          "page": "/",
+          "element": "<selector / tag / filename / URL>",
+          "quote": "<verbatim text or attribute>"
+        }
+      ],
+      "rationale": "<one line. Pass = Every statistic or performance claim shows its source, sample or method (footnote, link or 'based on N clients').>"
+    },
+    "trust.social_proof": {
+      "level": null,
+      "confidence": "high",
+      "evidence": [
+        {
+          "page": "/",
+          "element": "<selector / tag / filename / URL>",
+          "quote": "<verbatim text or attribute>"
+        }
+      ],
+      "rationale": "<one line. Pass = Testimonials carry a full name, title and organisation, and client logos are recognisable and named in alt text or captions.>"
+    },
+    "trust.founder_team": {
+      "level": null,
+      "confidence": "high",
+      "evidence": [
+        {
+          "page": "/",
+          "element": "<selector / tag / filename / URL>",
+          "quote": "<verbatim text or attribute>"
+        }
+      ],
+      "rationale": "<one line. Pass = Named people with photos, relevant credentials and verifiable history (LinkedIn, past employers, certifications).>"
+    },
+    "trust.maintenance": {
+      "level": null,
+      "confidence": "high",
+      "evidence": [
+        {
+          "page": "/",
+          "element": "<selector / tag / filename / URL>",
+          "quote": "<verbatim text or attribute>"
+        }
+      ],
+      "rationale": "<one line. Pass = The copyright year is current, there are no broken links or console errors, and no placeholder or 'coming soon' content.>"
+    },
+    "trust.contact_legitimacy": {
+      "level": null,
+      "confidence": "high",
+      "evidence": [
+        {
+          "page": "/",
+          "element": "<selector / tag / filename / URL>",
+          "quote": "<verbatim text or attribute>"
+        }
+      ],
+      "rationale": "<one line. Pass = Direct contact details (email or phone, a location), privacy policy and terms are linked, and there are active social profiles beyond one channel.>"
+    }
+  },
+  "findings": [
+    {
+      "id": "F01",
+      "criterion": "<rubric id>",
+      "title": "<problem in under 10 words, naming the element>",
+      "severity": "<critical|high|medium|low>",
+      "evidence": [
+        {
+          "page": "/",
+          "element": "<selector>",
+          "quote": "<verbatim>"
+        }
+      ],
+      "why": "<optional: business consequence>",
+      "impact": "<high|medium|low>",
+      "effort": "<S|M|L>",
+      "fix": "<concrete action>",
+      "owner": "<Dev|Design|Content|SEO|Marketing|Founder>"
+    }
+  ],
+  "strengths": [
+    {
+      "criterion": "<rubric id>",
+      "title": "<what to keep>",
+      "evidence": [
+        {
+          "element": "<selector>",
+          "quote": "<verbatim>"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "<what could not be observed and why>"
+  ]
+}
