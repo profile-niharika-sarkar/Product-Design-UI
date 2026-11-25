@@ -1,0 +1,120 @@
+name: UX Audit
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "Page to audit (https://...)"
+        required: true
+        type: string
+      site_name:
+        description: "Name for the report (optional)"
+        required: false
+        type: string
+      model:
+        description: "Claude model id (optional; blank uses the Claude Code default)"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      # Inputs go through env, never straight into run scripts, so a crafted URL cannot inject shell.
+      AUDIT_URL: ${{ inputs.url }}
+      AUDIT_NAME: ${{ inputs.site_name }}
+      AUDIT_MODEL: ${{ inputs.model }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check inputs and secret
+        env:
+          HAS_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
+        run: |
+          if [ "$HAS_KEY" != "true" ]; then
+            echo "::error::Add an ANTHROPIC_API_KEY repository secret (Settings → Secrets and variables → Actions)."
+            exit 1
+          fi
+          case "$AUDIT_URL" in
+            http://*|https://*) ;;
+            *) echo "::error::url must start with http:// or https://"; exit 1 ;;
+          esac
+          slug=$(printf '%s' "$AUDIT_URL" | sed -E 's#^https?://##; s#[^A-Za-z0-9]+#-#g; s#^-+|-+$##g' | cut -c1-60)
+          echo "SLUG=$slug" >> "$GITHUB_ENV"
+          echo "OUT=ux-audit-agent/out/$slug" >> "$GITHUB_ENV"
+          echo "AUDIT_DATE=$(date -u +%F)" >> "$GITHUB_ENV"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Playwright and Claude Code
+        run: |
+          npm install -g playwright@1.55.0 @anthropic-ai/claude-code
+          npx -y playwright@1.55.0 install --with-deps chromium
+          echo "NODE_PATH=$(npm root -g)" >> "$GITHUB_ENV"
+
+      - name: Collect evidence
+        run: |
+          mkdir -p "$OUT"
+          if python3 ux-audit-agent/tools/collect.py "$AUDIT_URL" --render --assets "$OUT" -o "$OUT/evidence.json"; then
+            echo "INPUT_MODE=rendered" >> "$GITHUB_ENV"
+          elif python3 ux-audit-agent/tools/collect.py "$AUDIT_URL" -o "$OUT/evidence.json"; then
+            echo "::warning::Render failed; fell back to a static fetch (no screenshots)."
+            echo "INPUT_MODE=url" >> "$GITHUB_ENV"
+          else
+            echo "::error::Could not fetch $AUDIT_URL (blocked or unreachable). Run the skill locally with pasted text or screenshots instead."
+            exit 1
+          fi
+
+      - name: Audit with Claude
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python3 - "$OUT/prompt.md" <<'PY'
+          import os, sys
+          t = open("ux-audit-agent/ci/audit-prompt.md", encoding="utf-8").read()
+          for k, v in {"URL": os.environ["AUDIT_URL"], "SITE_NAME": os.environ.get("AUDIT_NAME") or os.environ["AUDIT_URL"],
+                       "DATE": os.environ["AUDIT_DATE"], "OUT": os.environ["OUT"], "INPUT_MODE": os.environ["INPUT_MODE"]}.items():
+              t = t.replace("{{" + k + "}}", v)
+          open(sys.argv[1], "w", encoding="utf-8").write(t)
+          PY
+          model_args=()
+          if [ -n "$AUDIT_MODEL" ]; then model_args=(--model "$AUDIT_MODEL"); fi
+          claude -p "$(cat "$OUT/prompt.md")" \
+            "${model_args[@]}" \
+            --permission-mode dontAsk \
+            --allowedTools "Read" "Write" "Edit" "Glob" "Grep" "Bash(python3 ux-audit-agent/tools/score.py *)" \
+            --output-format text | tee "$OUT/claude-log.txt"
+
+      - name: Validate and render report
+        run: |
+          python3 ux-audit-agent/tools/score.py validate "$OUT/scoresheet.json"
+          python3 ux-audit-agent/tools/score.py report "$OUT/scoresheet.json" -o "$OUT/report.md" --csv "$OUT/fix-plan.csv"
+          python3 ux-audit-agent/tools/score.py score "$OUT/scoresheet.json" > "$OUT/scores.json"
+          # Job summary: everything up to the full fix-plan table.
+          sed '/^## Full fix plan/,$d' "$OUT/report.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ux-audit-${{ env.SLUG }}
+          path: |
+            ${{ env.OUT }}/report.md
+            ${{ env.OUT }}/fix-plan.csv
+            ${{ env.OUT }}/scoresheet.json
+            ${{ env.OUT }}/scores.json
+            ${{ env.OUT }}/evidence.json
+            ${{ env.OUT }}/*.png
+            ${{ env.OUT }}/claude-log.txt
+          if-no-files-found: warn
+          retention-days: 30

@@ -23,6 +23,7 @@ ux-audit-agent/
 ├── samples/<site>/report.md, fix-plan.csv   ← published sample reports
 ├── docs/benchmark.md           ← Bradbury calibration, v1→v2 changes, test-site results
 ├── docs/time-comparison.md     ← manual vs agent
+├── ci/audit-prompt.md          ← prompt for the GitHub Actions run (.github/workflows/ux-audit.yml)
 └── tests/                      ← unit tests (stdlib unittest)
 ```
 
@@ -84,6 +85,19 @@ To check a fresh agent run against a stored case:
 ```bash
 python ux-audit-agent/evals/run_evals.py --candidate m21-agency=out/m21/scoresheet.json
 ```
+
+### Run on GitHub (optional)
+Go to **Actions → UX Audit → Run workflow**, paste a URL, and download the
+report from the run's artifacts. This needs an `ANTHROPIC_API_KEY` repository
+secret (Settings → Secrets and variables → Actions).
+
+The workflow (`.github/workflows/ux-audit.yml`) renders the page, has Claude Code
+fill in the scoresheet by following `SKILL.md` (prompt: `ci/audit-prompt.md`), then
+validates it and renders the report with `score.py`. The artifact contains
+`report.md`, `fix-plan.csv`, `scoresheet.json`, the evidence and the screenshots, and
+the run's summary page shows the score and top 5 blockers. Optional inputs: a site
+name for the report and a Claude model id. Claude is limited to reading and writing
+files and running `score.py`.
 
 ### Known limitations
 - Sites that block automated fetching need pasted page text or screenshots.
