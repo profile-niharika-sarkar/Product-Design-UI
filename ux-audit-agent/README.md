@@ -26,15 +26,70 @@ ux-audit-agent/
 └── tests/                      ← unit tests (stdlib unittest)
 ```
 
-## Install as a Claude Code skill
+## Run it
 
-The repo already links it at `.claude/skills/ux-audit` → `ux-audit-agent/`, so Claude Code opened at the repo root picks it up. To use it everywhere:
+The UX Audit Agent is a Claude Code skill. It scores a website against a
+100-point rubric (UX & conversion, SEO, content, trust) and returns a ranked
+fix plan. Every finding cites the page element or text it came from.
+
+### Prerequisites
+- [Claude Code](https://claude.com/claude-code) installed
+- Python 3.10+
+- This repo cloned locally
+- Optional: Node + Playwright, for JavaScript-rendered sites, screenshots and the phone-width check (`npm i -g playwright && npx playwright install chromium`)
+
+### Steps
+1. Clone the repo and open it in Claude Code:
+   ```bash
+   git clone https://github.com/profile-niharika-sarkar/Product-Design-UI.git
+   cd Product-Design-UI
+   claude
+   ```
+   The skill is linked at `.claude/skills/ux-audit`, so Claude Code picks it up from the repo root.
+2. Run the skill with a URL:
+   ```
+   /ux-audit https://example.com
+   ```
+3. Claude collects evidence from the page (`tools/collect.py`), fills in the
+   scoresheet, and `tools/score.py` validates it and renders the report.
+
+To use the skill outside this repo, link it into your user skills folder:
 
 ```bash
 ln -s "$(pwd)/ux-audit-agent" ~/.claude/skills/ux-audit
 ```
 
-Then ask: *"Audit https://example.com"*, or run `/ux-audit https://example.com`.
+### What you get
+| Output | Description |
+|---|---|
+| Report (`.md`) | Overall score, top blockers, quick wins |
+| Fix plan (`.csv`) | Issue, evidence, severity, effort, recommended fix |
+| Scoresheet (`.json`) | Raw scores per criterion, for comparison across runs |
+
+### Run the tests
+```bash
+python ux-audit-agent/evals/run_evals.py
+```
+This checks the agent's scores against the expected ranges for the sample
+sites, so you can see whether a rubric change shifted the results.
+
+The unit tests cover the collector, the scoring maths and the evidence rule:
+
+```bash
+python -m unittest discover -s ux-audit-agent/tests
+```
+
+To check a fresh agent run against a stored case:
+
+```bash
+python ux-audit-agent/evals/run_evals.py --candidate m21-agency=out/m21/scoresheet.json
+```
+
+### Known limitations
+- Sites that block automated fetching need pasted page text or screenshots.
+- Scores are heuristic and run slightly stricter than my manual audits
+  (see [docs/benchmark.md](docs/benchmark.md)).
+- It reviews what is visible on the page, not analytics or real user data.
 
 ## Run the pieces by hand
 
@@ -50,23 +105,7 @@ python3 tools/score.py validate out/example/scoresheet.json
 python3 tools/score.py report out/example/scoresheet.json -o out/example/report.md --csv out/example/fix-plan.csv
 ```
 
-Python 3.9+ standard library only. `--render` additionally needs Node and Playwright (`npm i -g playwright && npx playwright install chromium`).
-
-## Test
-
-```bash
-python3 -m unittest discover -s tests
-```
-
-```bash
-python3 evals/run_evals.py
-```
-
-To check a fresh agent run against a stored case:
-
-```bash
-python3 evals/run_evals.py --candidate m21-agency=out/m21/scoresheet.json
-```
+These commands run from inside `ux-audit-agent/` and use the Python standard library only. `--render` also needs Node and Playwright.
 
 ## Sample results
 
